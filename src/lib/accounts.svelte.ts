@@ -3,6 +3,15 @@ import { SvelteMap } from 'svelte/reactivity';
 
 const STORE_KEY = 'tc_accounts';
 
+function browserClient(token?: string): Client {
+	const client = new Client(token);
+
+	// pass through CORS
+	client.agent = undefined as unknown as string;
+
+	return client;
+}
+
 type StoredAccount = {
 	id: string;
 	username: string;
@@ -19,7 +28,7 @@ class Account {
 		this.id = data.id;
 		this.username = data.username;
 		this.authToken = data.authToken;
-		this.client = new Client(data.authToken);
+		this.client = browserClient(data.authToken);
 	}
 
 	toJSON(): StoredAccount {
@@ -52,7 +61,7 @@ class Accounts {
 	}
 
 	async add(username: string, password: string) {
-		const c = new Client();
+		const c = browserClient();
 		const res = await c.auth.login(username, password);
 
 		if (!res.success) {

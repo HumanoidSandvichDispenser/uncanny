@@ -5,11 +5,19 @@
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import favicon from '$lib/assets/favicon.svg';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import { goto } from '$app/navigation';
+	import { accounts } from '$lib/accounts.svelte';
 	import '$lib/assets/design-system.css';
 
 	let { children } = $props();
 
 	const queryClient = new QueryClient();
+
+	$effect(() => {
+		if (!accounts.isAuthed && page.url.pathname !== '/login') {
+			goto('/login');
+		}
+	});
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
