@@ -5,6 +5,7 @@
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import favicon from '$lib/assets/favicon.svg';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import '$lib/assets/design-system.css';
 
 	let { children } = $props();
 
