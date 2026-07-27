@@ -72,10 +72,10 @@
 
 <style>
 	.page {
+		flex: 1;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		min-height: 100vh;
 		padding: var(--space-padding-md);
 	}
 

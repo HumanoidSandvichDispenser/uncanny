@@ -24,11 +24,30 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 <QueryClientProvider client={queryClient}>
-	{#if accounts.isAuthed}
-		<Navbar />
-	{/if}
-	{@render children()}
+	<div class="app">
+		{#if accounts.isAuthed}
+			<Navbar />
+		{/if}
+		<div class="main">
+			{@render children()}
+		</div>
+	</div>
 </QueryClientProvider>
+
+<style>
+	.app {
+		display: flex;
+		flex-direction: column;
+		min-height: 100dvh;
+	}
+
+	.main {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+	}
+</style>
 
 <div style="display:none">
 	{#each locales as locale (locale)}
