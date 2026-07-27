@@ -5,6 +5,7 @@
     "": {
       "name": "uncanny",
       "dependencies": {
+        "@sandvichxyz/pecans": "1.1.0",
         "bits-ui": "^2.18.1",
       },
       "devDependencies": {
@@ -136,6 +137,8 @@
     "@rolldown/binding-win32-x64-msvc": ["@rolldown/binding-win32-x64-msvc@1.1.5", "", { "os": "win32", "cpu": "x64" }, "sha512-tTZuDBPw85tEN5PQi1pnEBzDy0Z49HtScLAbD5t6hyeU92A95pRWaSMw1GZZi/RwgSgUIl0xrSlXIT/9QzvYSA=="],
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.1", "", {}, "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw=="],
+
+    "@sandvichxyz/pecans": ["@sandvichxyz/pecans@1.1.0", "", {}, "sha512-/QAetOFtcVcqHg+/q66Ef8698qlXze6vVpxKTL8wSbL0+JgXGsCs0WHRhd479UZDJq1LhdxbpDoM7XvBLbaxsA=="],
 
     "@sinclair/typebox": ["@sinclair/typebox@0.31.30", "", {}, "sha512-MGsM7bVmHg3sUKCphlu3SGQ+T+5JTbygZWYArfKQCW5anJeACHeqLhcnf+R7XlCWZ+QR3C8JTBx3kCKJTN69ow=="],
 
