@@ -10,6 +10,7 @@ function browserClient(token?: string): Client {
 	// pass through CORS
 	client.agent = undefined as unknown as string;
 
+	// all clients share the same profile cache
 	client.profileCache = profileCache;
 
 	return client;
@@ -32,9 +33,17 @@ class Account {
 		this.username = data.username;
 		this.authToken = data.authToken;
 		this.client = browserClient(data.authToken);
+	}
 
-		// all clients share the same profile cache
-		this.client.profileCache = profileCache;
+	async validate(): Promise<boolean> {
+		try {
+			const res = await this.client.auth.existingCookie(this.authToken);
+			return res.success;
+		} catch {
+			// assume validated if the request fails (e.g. network error) so we don't
+			// log the user out unnecessarily
+			return true;
+		}
 	}
 
 	toJSON(): StoredAccount {
@@ -64,6 +73,7 @@ class Accounts {
 
 	constructor() {
 		this.#load();
+		void this.#rehydrate();
 	}
 
 	async add(username: string, password: string) {
@@ -136,6 +146,29 @@ class Accounts {
 		if (activeId && this.map.has(activeId)) {
 			this.activeId = activeId;
 		}
+	}
+
+	async #rehydrate() {
+		const stored = [...this.map.values()];
+
+		if (stored.length === 0) {
+			return;
+		}
+
+		if (this.active === undefined) {
+			return;
+		}
+
+		if (!this.active.validate()) {
+			this.map.delete(this.active.id);
+
+			// if we removed the active account, fall back to any remaining one
+			this.activeId = this.map.keys().next().value;
+
+			// TODO: clear tanstack query cache
+		}
+
+		this.#save();
 	}
 
 	#save() {
