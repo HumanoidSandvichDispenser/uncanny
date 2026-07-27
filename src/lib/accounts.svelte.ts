@@ -8,7 +8,7 @@ function browserClient(token?: string): Client {
 	const client = new Client(token);
 
 	// pass through CORS
-	client.agent = undefined as unknown as string;
+	client.agent = undefined;
 
 	// all clients share the same profile cache
 	client.profileCache = profileCache;
@@ -19,6 +19,7 @@ function browserClient(token?: string): Client {
 type StoredAccount = {
 	id: string;
 	username: string;
+	avatar?: string;
 	authToken: string;
 };
 
@@ -27,11 +28,13 @@ class Account {
 	username = $state('');
 	authToken: string;
 	client: Client;
+	avatar = $state<string | undefined>(undefined);
 
 	constructor(data: StoredAccount) {
 		this.id = data.id;
 		this.username = data.username;
 		this.authToken = data.authToken;
+		this.avatar = data.avatar;
 		this.client = browserClient(data.authToken);
 	}
 
@@ -50,7 +53,8 @@ class Account {
 		return {
 			id: this.id,
 			username: this.username,
-			authToken: this.authToken
+			authToken: this.authToken,
+			avatar: this.avatar
 		};
 	}
 }
@@ -84,11 +88,13 @@ class Accounts {
 			throw new Error(`Failed to login: ${res.error}`);
 		}
 
-		let name = res.profiles?.find((p) => p.id == res.yourId)?.name ?? username;
+		const me = res.profiles?.find((p) => p.id == res.yourId);
+		const name = me?.name ?? username;
 
 		const account = new Account({
 			id: res.yourId,
 			username: name,
+			avatar: me?.avatar,
 			authToken: res.authToken
 		});
 
@@ -141,6 +147,19 @@ class Accounts {
 
 		for (const stored of accounts) {
 			this.map.set(stored.id, new Account(stored));
+
+			if (stored.avatar) {
+				profileCache[stored.id] ??= {
+					id: stored.id,
+					name: stored.username,
+					avatar: stored.avatar,
+					subs: {
+						in: 0,
+						out: 0,
+					},
+					online: Date.now(),
+				};
+			}
 		}
 
 		if (activeId && this.map.has(activeId)) {
@@ -159,7 +178,9 @@ class Accounts {
 			return;
 		}
 
-		if (!this.active.validate()) {
+		const isValidated = await this.active.validate();
+
+		if (!isValidated) {
 			this.map.delete(this.active.id);
 
 			// if we removed the active account, fall back to any remaining one

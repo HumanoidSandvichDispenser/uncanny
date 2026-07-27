@@ -34,6 +34,12 @@
 	</div>
 </QueryClientProvider>
 
+<div style="display:none">
+	{#each locales as locale (locale)}
+		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
+	{/each}
+</div>
+
 <style>
 	.app {
 		display: flex;
@@ -48,9 +54,3 @@
 		flex-direction: column;
 	}
 </style>
-
-<div style="display:none">
-	{#each locales as locale (locale)}
-		<a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
-	{/each}
-</div>
