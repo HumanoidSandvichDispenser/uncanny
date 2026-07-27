@@ -155,9 +155,9 @@ class Accounts {
 					avatar: stored.avatar,
 					subs: {
 						in: 0,
-						out: 0,
+						out: 0
 					},
-					online: Date.now(),
+					online: Date.now()
 				};
 			}
 		}

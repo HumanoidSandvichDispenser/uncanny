@@ -20,7 +20,9 @@
 
 	const label = $derived(displayName(realId));
 	const profile = $derived(getProfile(realId));
-	const avatar = $derived(profile?.avatar ? imageUrl(profile.avatar) : null);
+	// the API uses "blank" as the id for users with no avatar set
+	const avatarId = $derived(profile?.avatar && profile.avatar !== 'blank' ? profile.avatar : null);
+	const avatar = $derived(avatarId ? imageUrl(avatarId) : null);
 
 	const accent = $derived(avatarColor(realId));
 
