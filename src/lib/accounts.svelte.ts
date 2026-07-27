@@ -10,6 +10,8 @@ function browserClient(token?: string): Client {
 	// pass through CORS
 	client.agent = undefined as unknown as string;
 
+	client.profileCache = profileCache;
+
 	return client;
 }
 
