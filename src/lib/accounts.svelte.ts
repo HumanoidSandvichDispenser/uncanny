@@ -1,5 +1,6 @@
 import { Client } from '@sandvichxyz/pecans';
 import { SvelteMap } from 'svelte/reactivity';
+import { profileCache } from './profiles.svelte';
 
 const STORE_KEY = 'tc_accounts';
 
@@ -29,6 +30,9 @@ class Account {
 		this.username = data.username;
 		this.authToken = data.authToken;
 		this.client = browserClient(data.authToken);
+
+		// all clients share the same profile cache
+		this.client.profileCache = profileCache;
 	}
 
 	toJSON(): StoredAccount {

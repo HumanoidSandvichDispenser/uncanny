@@ -7,7 +7,9 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { goto } from '$app/navigation';
 	import { accounts } from '$lib/accounts.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import '$lib/assets/design-system.css';
+	import '$lib/assets/components.css';
 
 	let { children } = $props();
 
@@ -22,6 +24,9 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 <QueryClientProvider client={queryClient}>
+	{#if accounts.isAuthed}
+		<Navbar />
+	{/if}
 	{@render children()}
 </QueryClientProvider>
 

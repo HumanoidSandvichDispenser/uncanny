@@ -1,0 +1,171 @@
+<script lang="ts">
+	import { DropdownMenu } from 'bits-ui';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
+	import CaretDownIcon from 'phosphor-svelte/lib/CaretDownIcon';
+	import PlusIcon from 'phosphor-svelte/lib/PlusIcon';
+	import SignOutIcon from 'phosphor-svelte/lib/SignOutIcon';
+	import { accounts } from '$lib/accounts.svelte';
+	import UserAvatar from './UserAvatar.svelte';
+
+	const links = [
+		{ href: '/', label: 'Home' },
+		{ href: '/messages', label: 'Messages' },
+		{ href: '/forum', label: 'Forum' }
+	];
+
+	const active = $derived(accounts.active);
+	const others = $derived([...accounts.map.values()].filter((a) => a.id !== accounts.activeId));
+
+	function isActive(href: string): boolean {
+		return href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href);
+	}
+
+	function switchTo(id: string) {
+		accounts.switch(id);
+	}
+
+	function addAccount() {
+		goto('/login');
+	}
+
+	async function logOut() {
+		const id = accounts.activeId;
+		if (!id) {
+			return;
+		}
+
+		try {
+			await accounts.remove(id);
+		} catch {
+			return;
+		}
+
+		if (!accounts.isAuthed) {
+			goto('/login');
+		}
+	}
+</script>
+
+<header class="navbar">
+	<a class="brand" href="/">uncanny</a>
+
+	<nav class="nav">
+		{#each links as link (link.href)}
+			<a class="link label-sm" class:active={isActive(link.href)} href={link.href}>
+				{link.label}
+			</a>
+		{/each}
+	</nav>
+
+	<div class="spacer"></div>
+
+	{#if active}
+		<DropdownMenu.Root>
+			<DropdownMenu.Trigger class="menu-trigger">
+				<UserAvatar name={active.id} size={28} />
+				<span class="label-sm">{active.username}</span>
+				<CaretDownIcon size={14} weight="bold" />
+			</DropdownMenu.Trigger>
+
+			<DropdownMenu.Portal>
+				<DropdownMenu.Content class="menu" sideOffset={8} align="end">
+					<DropdownMenu.Item class="menu-item" onSelect={() => goto(`/users/${active.id}`)}>
+						<div class="identity">
+							<UserAvatar name={active.id} size={32} />
+							<div class="who">
+								<span class="label-sm">{active.username}</span>
+								<span class="text-xs sub">View profile</span>
+							</div>
+						</div>
+					</DropdownMenu.Item>
+
+					{#if others.length}
+						<DropdownMenu.Separator class="menu-sep" />
+						<DropdownMenu.Group>
+							<DropdownMenu.GroupHeading class="menu-heading label-xs">
+								Switch account
+							</DropdownMenu.GroupHeading>
+							{#each others as acc (acc.id)}
+								<DropdownMenu.Item class="menu-item" onSelect={() => switchTo(acc.id)}>
+									<UserAvatar name={acc.id} size={28} />
+									<span class="label-sm">{acc.username}</span>
+								</DropdownMenu.Item>
+							{/each}
+						</DropdownMenu.Group>
+					{/if}
+
+					<DropdownMenu.Separator class="menu-sep" />
+					<DropdownMenu.Item class="menu-item" onSelect={addAccount}>
+						<PlusIcon size={16} class="menu-glyph" />
+						<span class="label-sm">Add account</span>
+					</DropdownMenu.Item>
+					<DropdownMenu.Item class="menu-item" onSelect={logOut}>
+						<SignOutIcon size={16} class="menu-glyph" />
+						<span class="label-sm">Log out</span>
+					</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Portal>
+		</DropdownMenu.Root>
+	{/if}
+</header>
+
+<style>
+	.navbar {
+		display: flex;
+		align-items: center;
+		gap: var(--space-5);
+		padding: var(--space-3) var(--space-6);
+		background: var(--color-bg-card);
+		border-bottom: var(--border-thin) solid var(--color-border);
+		position: sticky;
+		top: 0;
+		z-index: var(--z-sticky);
+	}
+
+	.brand {
+		font: 600 18px var(--font-serif);
+		line-height: 1;
+		letter-spacing: -0.01em;
+		color: var(--color-text);
+	}
+
+	.brand:hover {
+		text-decoration: none;
+	}
+
+	.nav {
+		display: flex;
+		gap: var(--space-4);
+	}
+
+	.link {
+		color: var(--color-text-secondary);
+	}
+
+	.link:hover,
+	.link.active {
+		color: var(--color-text);
+		text-decoration: none;
+	}
+
+	.spacer {
+		flex: 1;
+	}
+
+	.identity {
+		display: flex;
+		gap: var(--space-3);
+		padding: var(--space-1);
+	}
+
+	.who {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.sub {
+		color: var(--color-text-tertiary);
+	}
+</style>
