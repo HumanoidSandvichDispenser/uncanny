@@ -38,7 +38,7 @@
 			<div class="last-post sub">
 				<span>
 					<i>
-						{ thread.lastPost.text }
+						{thread.lastPost.text}
 					</i>
 				</span>
 				<div class="avatar">
@@ -48,9 +48,7 @@
 		{:else}
 			<div class="last-post sub no-replies">
 				<span>
-					<i>
-						No replies yet. Be the first one!
-					</i>
+					<i> No replies yet. Be the first one! </i>
 				</span>
 			</div>
 		{/if}

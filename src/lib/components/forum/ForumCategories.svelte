@@ -8,6 +8,11 @@
 		queryFn: async () => await accounts.active!.client.forum.categoriesGet(),
 		enabled: accounts.isAuthed
 	}));
+
+	// filter out "followed" category:
+	const filteredCategories = $derived(
+		categories.data?.categories.filter((c) => c.id !== 'followed') ?? []
+	);
 </script>
 
 {#if categories.isPending}
@@ -16,7 +21,7 @@
 	<p class="text-sm error">{categories.error.message}</p>
 {:else if categories.isSuccess}
 	<ul class="list">
-		{#each categories.data.categories as cat (cat.id)}
+		{#each filteredCategories as cat (cat.id)}
 			<li>
 				<CategoryCard category={cat} />
 			</li>
