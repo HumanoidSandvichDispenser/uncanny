@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { createQuery } from '@tanstack/svelte-query';
 	import { accounts } from '$lib/accounts.svelte';
+	import { batched } from '$lib/batch';
 	import CategoryCard from '$lib/components/forum/CategoryCard.svelte';
 
 	const categories = createQuery(() => ({
 		queryKey: ['forum', 'categories', accounts.activeId],
-		queryFn: async () => await accounts.active!.client.forum.categoriesGet(),
+		queryFn: async () => {
+			const client = accounts.active!.client;
+			return await batched(client, client.forum.categoriesGet());
+		},
 		enabled: accounts.isAuthed
 	}));
 
