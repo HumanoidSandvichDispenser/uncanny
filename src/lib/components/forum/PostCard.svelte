@@ -3,6 +3,7 @@
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
 	import { displayName } from '$lib/profiles.svelte';
 	import { relativeTime } from '$lib/format';
+	import Ucp from '$lib/components/forum/Ucp.svelte';
 
 	let { post }: { post: ForumPost } = $props();
 </script>
@@ -18,8 +19,9 @@
 		</header>
 		<div class="text">
 			{#if post.ucpEnabled}
-				{post.ucpText}
+				<Ucp text={post.ucpText} />
 			{:else}
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 				{@html post.text}
 			{/if}
 		</div>

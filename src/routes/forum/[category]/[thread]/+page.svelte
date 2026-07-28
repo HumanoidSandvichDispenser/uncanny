@@ -71,6 +71,7 @@
 <style>
 	.page {
 		max-width: var(--width-content);
+		width: 100%;
 		margin: 0 auto;
 		padding: var(--space-padding-xl);
 	}
