@@ -33,14 +33,11 @@
 		align-items: center;
 		gap: var(--space-4);
 		padding: var(--space-padding-sm);
-		background: var(--color-bg-card);
-		border: var(--border-thin) solid var(--color-border);
-		border-radius: var(--radius-lg);
 		color: var(--color-text);
 	}
 
 	.row:hover {
-		border-color: var(--color-primary);
+		background: var(--color-surface-hover);
 		text-decoration: none;
 	}
 
@@ -50,12 +47,6 @@
 		gap: var(--space-3);
 		min-width: 0;
 		flex: 1;
-	}
-
-	.title {
-		display: flex;
-		align-items: center;
-		gap: var(--space-2);
 	}
 
 	.user {

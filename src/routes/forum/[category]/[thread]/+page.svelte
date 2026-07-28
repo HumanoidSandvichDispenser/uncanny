@@ -97,6 +97,9 @@
 	.posts {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-3);
+	}
+
+	.posts :global(.post:not(:last-child)) {
+		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 </style>

@@ -316,6 +316,7 @@ p {
 	--border-thin: 1px;
 	--border-normal: 1.5px;
 	--border-strong: 2px;
+	--border-left-thick: 4px;
 
 	/* Layout widths — max-width of centered content, not spacing. */
 	--width-xs: 16rem; /* small cards, narrow panels */

@@ -31,13 +31,6 @@
 		display: flex;
 		gap: var(--space-3);
 		padding: var(--space-padding-md);
-		background: var(--color-bg-card);
-		border: var(--border-thin) solid var(--color-border);
-		border-radius: var(--radius-lg);
-	}
-
-	.post.unread {
-		border-color: var(--color-primary);
 	}
 
 	.who {
@@ -67,7 +60,6 @@
 	}
 
 	.text {
-		white-space: pre-wrap;
 		overflow-wrap: anywhere;
 		color: var(--color-text);
 	}

@@ -64,7 +64,14 @@
 	.list {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-2);
 		list-style: none;
+		background: var(--color-bg-card);
+		border: var(--border-thin) solid var(--color-border);
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+	}
+
+	.list li:not(:last-child) {
+		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 </style>
