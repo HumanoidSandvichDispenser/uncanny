@@ -5,6 +5,7 @@
 	import ForumSearchBar from '$lib/components/forum/ForumSearchBar.svelte';
 	import ForumCategories from '$lib/components/forum/ForumCategories.svelte';
 	import ForumSearchResults from '$lib/components/forum/ForumSearchResults.svelte';
+	import NewFollowedThreadPosts from '$lib/components/forum/NewFollowedThreadPosts.svelte';
 
 	const term = $derived(page.url.searchParams.get('q')?.trim() ?? '');
 	let draft = $state(page.url.searchParams.get('q')?.trim() ?? '');
@@ -42,7 +43,6 @@
 <main class="page">
 	<header class="head">
 		<h1>Forum</h1>
-		<span class="text-sm sub">{searchView ? 'Search' : 'Categories'}</span>
 	</header>
 
 	<div class="bar">
@@ -61,12 +61,14 @@
 		</section>
 	{:else}
 		<section class="body" in:fade={{ duration: 120 }}>
+			<NewFollowedThreadPosts />
+			<h3>Categories</h3>
 			<ForumCategories />
 		</section>
 	{/if}
 </main>
 
-<style>
+<style scoped>
 	.page {
 		width: 100%;
 		max-width: var(--width-content);
@@ -96,5 +98,11 @@
 		background: var(--color-bg-card);
 		border: var(--border-thin) solid var(--color-border);
 		border-radius: var(--radius-sm);
+	}
+
+	section.body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-3);
 	}
 </style>

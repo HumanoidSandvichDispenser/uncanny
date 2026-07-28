@@ -2,7 +2,7 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { accounts } from '$lib/accounts.svelte';
 	import { queryError } from '$lib/query';
-	import SearchResultCard from '$lib/components/forum/SearchResultCard.svelte';
+	import PostSummaryCard from '$lib/components/forum/PostSummaryCard.svelte';
 
 	let { term }: { term: string } = $props();
 
@@ -37,7 +37,7 @@
 		<ul class="list">
 			{#each search.data.results as result (result.post.id)}
 				<li>
-					<SearchResultCard {result} />
+					<PostSummaryCard post={result.post} threadTitle={result.threadTitle} />
 				</li>
 			{/each}
 		</ul>

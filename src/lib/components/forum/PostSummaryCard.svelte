@@ -1,24 +1,25 @@
 <script lang="ts">
-	import type { ForumSearchResult } from '@sandvichxyz/pecans';
+	import type { ThreadListPost } from '@sandvichxyz/pecans';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
 	import { displayName } from '$lib/profiles.svelte';
 	import { relativeTime } from '$lib/format';
 
-	let { result }: { result: ForumSearchResult } = $props();
-
-	const post = $derived(result.post);
+	let { post, threadTitle }: { post: ThreadListPost; threadTitle: string } = $props();
 </script>
 
 <a class="row" href="/forum/{post.category}/{post.thread}">
 	<div class="main-col">
-		<span class="label-md title">
-			<h2 class="h3">{result.threadTitle}</h2>
-		</span>
 		<div class="user">
-			<UserAvatar name={post.author} size={32} />
-			<div class="text-xs">{displayName(post.author)}</div>
-			<span class="text-lg sub">&middot;</span>
-			<div class="text-xs sub">{relativeTime(post.time)}</div>
+			<div class="left">
+				<UserAvatar name={post.author} size={24} />
+				<div class="text-xs">{displayName(post.author)}</div>
+				<span>&middot;</span>
+				<!-- TODO: include category and cache category title -->
+				<div class="text-xs sub">{threadTitle}</div>
+			</div>
+			<div class="right">
+				<div class="text-xs sub">{relativeTime(post.time)}</div>
+			</div>
 		</div>
 		<span class="snippet">
 			{post.text}
@@ -26,12 +27,12 @@
 	</div>
 </a>
 
-<style>
+<style scoped>
 	.row {
 		display: flex;
 		align-items: center;
 		gap: var(--space-4);
-		padding: var(--space-padding-lg);
+		padding: var(--space-padding-sm);
 		background: var(--color-bg-card);
 		border: var(--border-thin) solid var(--color-border);
 		border-radius: var(--radius-lg);
@@ -62,6 +63,13 @@
 		align-items: center;
 		gap: var(--space-2);
 		white-space: nowrap;
+		justify-content: space-between;
+	}
+
+	.user .left {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
 	}
 
 	.sub {
