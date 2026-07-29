@@ -3,7 +3,7 @@
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
 	import { displayName } from '$lib/profiles.svelte';
 	import { relativeTime } from '$lib/format';
-	import Ucp from '$lib/components/forum/Ucp.svelte';
+	import Ucp from '$lib/ucp/components/Ucp.svelte';
 
 	let { post }: { post: ForumPost } = $props();
 </script>

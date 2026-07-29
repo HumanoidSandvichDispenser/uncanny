@@ -15,7 +15,14 @@ import {
 	type UcpContext,
 	type UcpDocument
 } from './ast';
-import { lexInline, tokenizeBlocks, type Chunk, type TagInfo, type TagKey, type Tok } from './lexer';
+import {
+	lexInline,
+	tokenizeBlocks,
+	type Chunk,
+	type TagInfo,
+	type TagKey,
+	type Tok
+} from './lexer';
 
 export function parse(text: string, context: UcpContext = 'FORUM'): UcpDocument {
 	const features = FEATURES[context];

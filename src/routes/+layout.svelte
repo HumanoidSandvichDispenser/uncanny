@@ -10,7 +10,6 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import '$lib/assets/design-system.css';
 	import '$lib/assets/components.css';
-	import '$lib/assets/ucp.css';
 
 	let { children } = $props();
 
