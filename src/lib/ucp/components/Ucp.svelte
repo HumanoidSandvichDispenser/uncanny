@@ -2,8 +2,12 @@
 	import type { UcpContext } from '$lib/ucp/ast';
 	import { parse } from '$lib/ucp/parse';
 	import Block from './Block.svelte';
+	import { setQuoteDepth } from './context';
 
 	let { text, context = 'FORUM' }: { text: string; context?: UcpContext } = $props();
+
+	// initialize quote depth to 0
+	setQuoteDepth(0);
 
 	const doc = $derived(parse(text ?? '', context));
 </script>
