@@ -209,7 +209,7 @@
 
 {#snippet controls()}
 	<button
-		class="btn btn-secondary nav-btn"
+		class="btn btn-secondary btn-icon"
 		onclick={jumpToStart}
 		disabled={view.isFetching}
 		title="Jump to the first post"
@@ -218,7 +218,7 @@
 		<ArrowLineUpIcon weight="bold" />
 	</button>
 	<button
-		class="btn btn-secondary nav-btn"
+		class="btn btn-secondary btn-icon"
 		onclick={jumpToLatest}
 		disabled={view.isFetching}
 		title="Jump to the latest post"

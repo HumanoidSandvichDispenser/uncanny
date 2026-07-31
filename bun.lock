@@ -5,7 +5,7 @@
     "": {
       "name": "uncanny",
       "dependencies": {
-        "@sandvichxyz/pecans": "^1.1.2",
+        "@sandvichxyz/pecans": "^1.1.6",
         "@tanstack/svelte-query": "^6.1.38",
         "bits-ui": "^2.18.1",
         "idb-keyval": "^6.3.0",
@@ -140,7 +140,7 @@
 
     "@rolldown/pluginutils": ["@rolldown/pluginutils@1.0.1", "", {}, "sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw=="],
 
-    "@sandvichxyz/pecans": ["@sandvichxyz/pecans@1.1.3", "", {}, "sha512-doy9IcUqGHYkBJ4ilnw05Mr53UsFZed4CxJvjDDRSC5Pyl9ExUE04/54qRTAPstXrgTwyWxIw67mOpnGnsBJHw=="],
+    "@sandvichxyz/pecans": ["@sandvichxyz/pecans@1.1.6", "", {}, "sha512-c5pWYzMLTFNi/c1OBE5OlVjo4G/5gNTFJDAmr5Z89I0dde6Td9GJs1ut9Dh1hVxYkfXipVKbp0Jo87JtB7VHaA=="],
 
     "@sinclair/typebox": ["@sinclair/typebox@0.31.30", "", {}, "sha512-MGsM7bVmHg3sUKCphlu3SGQ+T+5JTbygZWYArfKQCW5anJeACHeqLhcnf+R7XlCWZ+QR3C8JTBx3kCKJTN69ow=="],
 

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { ForumPost } from '@sandvichxyz/pecans';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
-	import { displayName } from '$lib/profiles.svelte';
 	import { relativeTime } from '$lib/format';
 	import Ucp from '$lib/ucp/components/Ucp.svelte';
+	import UsernameLabel from '../UsernameLabel.svelte';
 
 	let { post }: { post: ForumPost } = $props();
 </script>
@@ -14,7 +14,10 @@
 	</a>
 	<div class="body">
 		<header class="meta">
-			<a class="name label-md" href="/users/{post.user}">{displayName(post.user)}</a>
+			<UsernameLabel
+				userId={post.user}
+				showAdmin
+			/>
 			<span class="text-xs sub">{relativeTime(post.time)}</span>
 		</header>
 		<div class="text">
