@@ -1,12 +1,16 @@
 <script lang="ts">
 	import { DropdownMenu } from 'bits-ui';
+	import { fade } from 'svelte/transition';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import CaretDownIcon from 'phosphor-svelte/lib/CaretDownIcon';
 	import PlusIcon from 'phosphor-svelte/lib/PlusIcon';
 	import SignOutIcon from 'phosphor-svelte/lib/SignOutIcon';
 	import { accounts } from '$lib/accounts.svelte';
+	import { getPageNav } from '$lib/nav.svelte';
 	import UserAvatar from './UserAvatar.svelte';
+
+	const pageNav = getPageNav();
 
 	const links = [
 		{ href: '/', label: 'Home' },
@@ -58,7 +62,20 @@
 		{/each}
 	</nav>
 
-	<div class="spacer"></div>
+	<div class="pushed">
+		{#if pageNav.visible && pageNav.title}
+			<div class="pushed-inner" in:fade={{ duration: 120 }}>
+				<span class="pushed-title">
+					{pageNav.title}
+				</span>
+				{#if pageNav.content}
+					<div class="pushed-content">
+						{@render pageNav.content()}
+					</div>
+				{/if}
+			</div>
+		{/if}
+	</div>
 
 	{#if active}
 		<DropdownMenu.Root>
@@ -149,8 +166,32 @@
 		text-decoration: none;
 	}
 
-	.spacer {
+	.pushed {
 		flex: 1;
+		min-width: 0;
+	}
+
+	.pushed-inner {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		min-width: 0;
+	}
+
+	.pushed-title {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		color: var(--color-text);
+		font-size: var(--text-md);
+		font-weight: 600;
+	}
+
+	.pushed-content {
+		flex: none;
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
 	}
 
 	.identity {

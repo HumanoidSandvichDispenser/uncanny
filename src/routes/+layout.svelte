@@ -7,6 +7,7 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { goto } from '$app/navigation';
 	import { accounts } from '$lib/accounts.svelte';
+	import { PageNav, setPageNav } from '$lib/nav.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import '$lib/assets/design-system.css';
 	import '$lib/assets/components.css';
@@ -14,6 +15,9 @@
 	let { children } = $props();
 
 	const queryClient = new QueryClient();
+
+	// Routes can push a title/controls into the navbar via this shared store.
+	setPageNav(new PageNav());
 
 	$effect(() => {
 		if (!accounts.isAuthed && page.url.pathname !== '/login') {
