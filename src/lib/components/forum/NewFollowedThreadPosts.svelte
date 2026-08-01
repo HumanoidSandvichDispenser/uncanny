@@ -35,7 +35,7 @@
 		{#if followed.data.threads.length === 0}
 			<p class="empty-msg text-sm">No new posts in threads you follow.</p>
 		{:else}
-			<ul class="list">
+			<ul class="list-card">
 				{#each followed.data.threads as thread (thread.id)}
 					<li>
 						<PostSummaryCard post={thread.lastPost} threadTitle={thread.title} />
@@ -80,17 +80,4 @@
 		color: var(--color-error);
 	}
 
-	.list {
-		display: flex;
-		flex-direction: column;
-		list-style: none;
-		background: var(--color-bg-card);
-		border: var(--border-thin) solid var(--color-border);
-		border-radius: var(--radius-lg);
-		overflow: hidden;
-	}
-
-	.list li:not(:last-child) {
-		border-bottom: var(--border-thin) solid var(--color-border);
-	}
 </style>

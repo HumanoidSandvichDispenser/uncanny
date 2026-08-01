@@ -76,3 +76,39 @@
 	padding: var(--space-1) var(--space-2);
 	color: var(--color-text-tertiary);
 }
+
+/*
+ * Bordered list card — a surface that clips a stack of rows and hairlines
+ * between them. The shared shape behind forum search, categories, "threads you
+ * follow", and the home dashboard lists. Section headers sit ABOVE the card,
+ * not inside it. Put content in a direct-child <li>; give whole-row links or
+ * buttons the `.list-row` class for consistent padding and hover.
+ */
+.list-card {
+	display: flex;
+	flex-direction: column;
+	list-style: none;
+	background: var(--color-bg-card);
+	border: var(--border-thin) solid var(--color-border);
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+}
+
+.list-card > li:not(:last-child) {
+	border-bottom: var(--border-thin) solid var(--color-border);
+}
+
+.list-row {
+	display: flex;
+	gap: var(--space-3);
+	width: 100%;
+	padding: var(--space-padding-sm);
+	color: var(--color-text);
+	text-align: left;
+}
+
+a.list-row:hover,
+button.list-row:hover {
+	background: var(--color-surface-hover);
+	text-decoration: none;
+}

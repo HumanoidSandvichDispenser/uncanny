@@ -34,7 +34,7 @@
 	{#if search.data.results.length === 0}
 		<p class="text-sm sub">No posts match &ldquo;{term}&rdquo;.</p>
 	{:else}
-		<ul class="list">
+		<ul class="list-card">
 			{#each search.data.results as result (result.post.id)}
 				<li>
 					<PostSummaryCard post={result.post} threadTitle={result.threadTitle} />
@@ -59,19 +59,5 @@
 
 	.error {
 		color: var(--color-error);
-	}
-
-	.list {
-		display: flex;
-		flex-direction: column;
-		list-style: none;
-		background: var(--color-bg-card);
-		border: var(--border-thin) solid var(--color-border);
-		border-radius: var(--radius-lg);
-		overflow: hidden;
-	}
-
-	.list li:not(:last-child) {
-		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 </style>

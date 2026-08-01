@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { avatarColor, initial } from '$lib/format';
 	import { anonSeed, youAnonRealId } from '$lib/anon';
-	import { getProfile, displayName } from '$lib/profiles.svelte';
+	import { getProfile, displayName, profileStatus, type ProfileStatus } from '$lib/profiles.svelte';
 	import { imageUrl } from '$lib/imageCache.svelte';
 	import Identicon from './Identicon.svelte';
 
@@ -26,31 +26,24 @@
 
 	const accent = $derived(avatarColor(realId));
 
-	const statusLevel = $derived.by<'online' | 'recent' | null>(() => {
+	const statusLevel = $derived.by<ProfileStatus | null>(() => {
 		if (!status || seed || isYouAnon) {
 			return null;
 		}
 
-		const online = profile?.online;
-		if (!online) {
-			return null;
-		}
-
-		const delta = Date.now() / 1000 - online;
-
-		// TODO: l10n
-		if (delta < 300) {
-			return 'online';
-		}
-
-		if (delta < 1800) {
-			return 'recent';
-		}
-
-		return null;
+		return profileStatus(realId);
 	});
 
-	const statusLabel = $derived(statusLevel === 'online' ? 'Online' : 'Recently active');
+	const statusLabel = $derived.by(() => {
+		switch (statusLevel) {
+			case 'online':
+				return 'Online';
+			case 'recent':
+				return 'Recently active';
+			default:
+				return '';
+		}
+	});
 	const dot = $derived(Math.max(8, Math.round(size * 0.3)));
 </script>
 
@@ -95,7 +88,7 @@
 		</span>
 	{/if}
 
-	{#if statusLevel}
+	{#if statusLevel && statusLevel !== 'offline'}
 		<span
 			class="status-dot {statusLevel}"
 			style:width="{dot}px"

@@ -24,7 +24,7 @@
 {:else if categories.isError}
 	<p class="text-sm error">{categories.error.message}</p>
 {:else if categories.isSuccess}
-	<ul class="list">
+	<ul class="list-card">
 		{#each filteredCategories as cat (cat.id)}
 			<li>
 				<CategoryCard category={cat} />
@@ -40,19 +40,5 @@
 
 	.error {
 		color: var(--color-error);
-	}
-
-	.list {
-		display: flex;
-		flex-direction: column;
-		list-style: none;
-		background: var(--color-bg-card);
-		border: var(--border-thin) solid var(--color-border);
-		border-radius: var(--radius-lg);
-		overflow: hidden;
-	}
-
-	.list li:not(:last-child) {
-		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 </style>
