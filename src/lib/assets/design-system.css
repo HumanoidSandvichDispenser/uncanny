@@ -327,6 +327,7 @@ p {
 	/* Layout widths — max-width of centered content, not spacing. */
 	--width-xs: 16rem; /* small cards, narrow panels */
 	--width-form: 22rem; /* auth cards, single-column forms, dialogs */
+	--width-rail: 24rem;
 	--width-narrow: 32rem; /* compact panels */
 	--width-content: 48rem; /* readable column / centered page content */
 	--width-wide: 72rem; /* dashboards, multi-column layouts */
