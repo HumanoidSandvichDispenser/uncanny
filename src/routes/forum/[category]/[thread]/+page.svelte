@@ -8,7 +8,7 @@
 	import { getPageNav } from '$lib/nav.svelte';
 	import { observeVisible } from '$lib/actions/observeVisible';
 	import PostCard from '$lib/components/forum/PostCard.svelte';
-	import { setDirection } from '$lib/transition';
+	import { transitionSettled } from '$lib/transition';
 
 	const pageNav = getPageNav();
 
@@ -130,10 +130,15 @@
 		}
 
 		pendingScroll = null;
-		requestAnimationFrame(() => {
-			document
-				.getElementById(`post-${target.id}`)
-				?.scrollIntoView({ block: intent === 'bottom' ? 'end' : 'start' });
+
+		// wait for the transition to settle before scrolling, so that the scroll
+		// position is correct
+		transitionSettled().then(() => {
+			requestAnimationFrame(() => {
+				document
+					.getElementById(`post-${target.id}`)
+					?.scrollIntoView({ block: intent === 'bottom' ? 'end' : 'start' });
+			});
 		});
 	});
 
@@ -162,9 +167,9 @@
 	<a
 		class="text-sm crumb"
 		href="/forum/{category}"
-		onclick={() => setDirection('back')}
+		data-nav="back"
 	>
-		Back
+		{category}
 	</a>
 
 	<header class="head" use:observeVisible={(visible) => (pageNav.visible = !visible)}>

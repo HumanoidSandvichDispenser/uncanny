@@ -67,6 +67,11 @@
 	}
 
 	@media (max-width: 640px) {
+		.page {
+			padding: var(--space-padding-sm);
+		}
+	}
+
 	.head {
 		display: flex;
 		flex-direction: column;

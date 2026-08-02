@@ -9,15 +9,13 @@
 	import { accounts } from '$lib/accounts.svelte';
 	import { getPageNav } from '$lib/nav.svelte';
 	import UserAvatar from './UserAvatar.svelte';
-	import { setDirection, type Direction } from '$lib/transition';
 
 	const pageNav = getPageNav();
 
-	const links: { href: string, label: string, direction?: Direction }[] = [
+	const links: { href: string, label: string }[] = [
 		{
 			href: '/',
-			label: 'Home',
-			direction: 'back'
+			label: 'Home'
 		},
 		{
 			href: '/messages',
@@ -71,7 +69,8 @@
 				class="link label-sm"
 				class:active={isActive(link.href)}
 				href={link.href}
-				onclick={() => setDirection(link.direction ?? 'forward')}
+				data-nav="replace"
+				data-sveltekit-replacestate
 			>
 				{link.label}
 			</a>
