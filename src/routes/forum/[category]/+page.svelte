@@ -66,6 +66,7 @@
 		padding: var(--space-padding-xl);
 	}
 
+	@media (max-width: 640px) {
 	.head {
 		display: flex;
 		flex-direction: column;

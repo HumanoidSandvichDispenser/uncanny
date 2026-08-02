@@ -243,6 +243,12 @@
 		padding: var(--space-padding-xl);
 	}
 
+	@media (max-width: 640px) {
+		.page {
+			padding: 0;
+		}
+	}
+
 	.head {
 		display: flex;
 		align-items: center;
