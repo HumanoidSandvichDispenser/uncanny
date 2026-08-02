@@ -5,7 +5,8 @@
 	import { locales, localizeHref } from '$lib/paraglide/runtime';
 	import favicon from '$lib/assets/favicon.svg';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
-	import { goto } from '$app/navigation';
+	import { goto, onNavigate } from '$app/navigation';
+	import { takeDirection } from '$lib/transition';
 	import { accounts } from '$lib/accounts.svelte';
 	import { PageNav, setPageNav } from '$lib/nav.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
@@ -23,6 +24,46 @@
 		if (!accounts.isAuthed && page.url.pathname !== '/login') {
 			goto('/login');
 		}
+	});
+
+	// for desktop, chunked JS is fetched on link hover, but for mobile, we
+	// want to preload on viewport entry instead
+	$effect(() => {
+		const mobile = window.matchMedia('(max-width: 640px)');
+		const apply = () => {
+			if (mobile.matches) {
+				document.body.dataset.sveltekitPreloadCode = 'viewport';
+			} else {
+				delete document.body.dataset.sveltekitPreloadCode;
+			}
+		};
+		apply();
+		mobile.addEventListener('change', apply);
+		return () => mobile.removeEventListener('change', apply);
+	});
+
+	onNavigate((navigation) => {
+		if (!document.startViewTransition) {
+			return;
+		}
+
+		const direction = takeDirection() ?? ((navigation.delta ?? 0) < 0 ? 'back' : 'forward');
+
+		if (direction == 'none') {
+			return;
+		}
+
+		document.documentElement.dataset.nav = direction;
+
+		return new Promise((resolve) => {
+			const transition = document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+			transition.finished.finally(() => {
+				delete document.documentElement.dataset.nav;
+			});
+		});
 	});
 </script>
 
@@ -56,5 +97,93 @@
 		min-height: 0;
 		display: flex;
 		flex-direction: column;
+	}
+
+	/* By default (desktop) routes swap instantly — no page animation. */
+	:global(::view-transition-old(root)),
+	:global(::view-transition-new(root)) {
+		animation: none;
+	}
+
+	@media (max-width: 640px) {
+		:global(::view-transition-group(root)) {
+			animation-duration: var(--duration-standard, 200ms);
+			animation-timing-function: var(--ease-out, ease);
+		}
+
+		:global(html[data-nav='forward']::view-transition-new(root)) {
+			animation: slide-in-bottom var(--duration-slow) var(--ease-out) both;
+		}
+
+		:global(html[data-nav='back']::view-transition-old(root)) {
+			animation: slide-out-bottom var(--duration-slow) var(--ease-out) both;
+			z-index: 1;
+		}
+
+		:global(html[data-nav='back']::view-transition-new(root)) {
+			animation: none;
+			z-index: 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global(::view-transition-old(root)),
+		:global(::view-transition-new(root)) {
+			animation: none !important;
+		}
+	}
+
+	@keyframes -global-slide-in-right {
+		from {
+			transform: translateX(100%);
+		}
+	}
+
+	@keyframes -global-slide-out-left {
+		to {
+			transform: translateX(-25%);
+		}
+	}
+
+	@keyframes -global-slide-in-left {
+		from {
+			transform: translateX(-25%);
+		}
+	}
+
+	@keyframes -global-slide-out-right {
+		to {
+			transform: translateX(100%);
+		}
+	}
+
+	@keyframes -global-slide-in-bottom {
+		from {
+			transform: translateY(100%);
+		}
+	}
+
+	@keyframes -global-slide-out-bottom {
+		to {
+			transform: translateY(100%);
+		}
+	}
+
+	@keyframes -global-slide-out-up {
+		to {
+			transform: translateY(-25%);
+		}
+	}
+
+	@keyframes -global-slide-in-top {
+		from {
+			transform: translateY(-25%);
+		}
+	}
+
+	@keyframes -global-slide-out-down {
+		to {
+			transform: translateY(100%);
+		}
 	}
 </style>

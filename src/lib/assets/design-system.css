@@ -438,6 +438,14 @@ p {
 html {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	-webkit-tap-highlight-color: transparent;
+	overscroll-behavior: none;
+}
+
+button,
+[role='button'] {
+	-webkit-touch-callout: none;
+	user-select: none;
 }
 
 body {
@@ -446,6 +454,9 @@ body {
 	line-height: 1.5;
 	color: var(--color-text);
 	background: var(--color-bg-page);
+
+	padding: env(safe-area-inset-top) env(safe-area-inset-right)
+		env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 a {
@@ -454,9 +465,13 @@ a {
 	transition: color var(--duration-fast) var(--ease-out);
 }
 
-a:hover {
-	color: var(--color-accent-700);
-	text-decoration: underline;
+/* Only apply hover styling on devices with a real pointer, so tapping a link
+   on touch/mobile doesn't trigger sticky :hover (underline flash). */
+@media (hover: hover) {
+	a:hover {
+		color: var(--color-accent-700);
+		text-decoration: underline;
+	}
 }
 
 button,

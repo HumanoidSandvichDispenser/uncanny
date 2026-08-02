@@ -6,6 +6,7 @@
 	import ForumCategories from '$lib/components/forum/ForumCategories.svelte';
 	import ForumSearchResults from '$lib/components/forum/ForumSearchResults.svelte';
 	import NewFollowedThreadPosts from '$lib/components/forum/NewFollowedThreadPosts.svelte';
+	import { gotoDirection } from '$lib/transition';
 
 	const term = $derived(page.url.searchParams.get('q')?.trim() ?? '');
 	let draft = $state(page.url.searchParams.get('q')?.trim() ?? '');
@@ -27,7 +28,11 @@
 			url.searchParams.delete('q');
 		}
 
-		goto(url, { keepFocus: true, noScroll: true });
+		gotoDirection(
+			url,
+			{ keepFocus: true, noScroll: true },
+			'none'
+		);
 	}
 
 	function onsearch() {

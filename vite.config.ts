@@ -4,7 +4,17 @@ import { playwright } from '@vitest/browser-playwright';
 import adapter from '@sveltejs/adapter-static';
 import { sveltekit } from '@sveltejs/kit/vite';
 
+const allowedHosts = process.env.ALLOWED_HOSTS?.trim();
+
 export default defineConfig({
+	server: {
+		allowedHosts:
+			allowedHosts === 'true'
+				? true
+				: allowedHosts
+					? allowedHosts.split(',').map((host) => host.trim())
+					: undefined
+	},
 	plugins: [
 		sveltekit({
 			compilerOptions: {

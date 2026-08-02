@@ -8,6 +8,7 @@
 	import { getPageNav } from '$lib/nav.svelte';
 	import { observeVisible } from '$lib/actions/observeVisible';
 	import PostCard from '$lib/components/forum/PostCard.svelte';
+	import { setDirection } from '$lib/transition';
 
 	const pageNav = getPageNav();
 
@@ -158,7 +159,13 @@
 </script>
 
 <main class="page">
-	<a class="text-sm crumb" href="/forum/{category}">Back</a>
+	<a
+		class="text-sm crumb"
+		href="/forum/{category}"
+		onclick={() => setDirection('back')}
+	>
+		Back
+	</a>
 
 	<header class="head" use:observeVisible={(visible) => (pageNav.visible = !visible)}>
 		<div class="titlebar">

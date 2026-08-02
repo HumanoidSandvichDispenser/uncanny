@@ -9,13 +9,24 @@
 	import { accounts } from '$lib/accounts.svelte';
 	import { getPageNav } from '$lib/nav.svelte';
 	import UserAvatar from './UserAvatar.svelte';
+	import { setDirection, type Direction } from '$lib/transition';
 
 	const pageNav = getPageNav();
 
-	const links = [
-		{ href: '/', label: 'Home' },
-		{ href: '/messages', label: 'Messages' },
-		{ href: '/forum', label: 'Forum' }
+	const links: { href: string, label: string, direction?: Direction }[] = [
+		{
+			href: '/',
+			label: 'Home',
+			direction: 'back'
+		},
+		{
+			href: '/messages',
+			label: 'Messages'
+		},
+		{
+			href: '/forum',
+			label: 'Forum'
+		}
 	];
 
 	const active = $derived(accounts.active);
@@ -56,7 +67,12 @@
 
 	<nav class="nav">
 		{#each links as link (link.href)}
-			<a class="link label-sm" class:active={isActive(link.href)} href={link.href}>
+			<a
+				class="link label-sm"
+				class:active={isActive(link.href)}
+				href={link.href}
+				onclick={() => setDirection(link.direction ?? 'forward')}
+			>
 				{link.label}
 			</a>
 		{/each}
