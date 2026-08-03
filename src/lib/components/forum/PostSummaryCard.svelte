@@ -37,7 +37,7 @@
 	}
 
 	.row:hover {
-		background: var(--color-surface-hover);
+		background-color: var(--color-surface-hover);
 		text-decoration: none;
 	}
 

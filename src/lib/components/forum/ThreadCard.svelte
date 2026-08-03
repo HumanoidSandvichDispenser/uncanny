@@ -72,6 +72,12 @@
 		text-decoration: none;
 	}
 
+	@media (hover: none) {
+		.row:active {
+			background: var(--color-surface-active);
+		}
+	}
+
 	.main-col {
 		display: flex;
 		flex-direction: column;
