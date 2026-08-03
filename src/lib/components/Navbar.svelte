@@ -125,7 +125,7 @@
 	}
 
 	/* Mobile uses the compact MobileNav (back + title + hamburger) instead. */
-	@media (max-width: 640px) {
+	@media (--mobile) {
 		.navbar {
 			display: none;
 		}

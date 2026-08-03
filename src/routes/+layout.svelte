@@ -33,7 +33,7 @@
 	// for desktop, chunked JS is fetched on link hover, but for mobile, we
 	// want to preload on viewport entry instead
 	$effect(() => {
-		const mobile = window.matchMedia('(max-width: 640px)');
+		const mobile = window.matchMedia('(width < 640px)');
 
 		const apply = () => {
 			if (mobile.matches) {

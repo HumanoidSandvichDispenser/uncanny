@@ -107,7 +107,7 @@
 
 <style>
 	.mobile-nav {
-		display: flex;
+		display: none;
 		align-items: center;
 		gap: var(--space-2);
 		padding: var(--space-2) var(--space-3);
@@ -115,10 +115,9 @@
 		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 
-	/* Desktop uses the full Navbar instead. */
-	@media (min-width: 641px) {
+	@media (--mobile) {
 		.mobile-nav {
-			display: none;
+			display: flex;
 		}
 	}
 
