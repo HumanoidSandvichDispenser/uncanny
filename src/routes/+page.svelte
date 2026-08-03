@@ -11,28 +11,43 @@
 
 <PageNav title="Home" />
 
-<main class="home">
-	<div class="span"><StoryStrip /></div>
-
-	<div class="col center">
-		<AskPill />
-		<AnswerWidget />
-		<RecentQuestions />
+<div class="page">
+	<div class="stories">
+		<StoryStrip />
 	</div>
 
-	<div class="col rail">
-		<RecentForumPosts />
-		<FeedPreview />
-		<Pulse />
-	</div>
-</main>
+	<main class="home">
+		<div class="col center">
+			<AskPill />
+			<AnswerWidget />
+			<RecentQuestions />
+		</div>
+
+		<div class="col rail">
+			<RecentForumPosts />
+			<FeedPreview />
+			<Pulse />
+		</div>
+	</main>
+</div>
 
 <style>
+	.page {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-gap-md);
+		padding: var(--space-padding-xl);
+
+		@media (--mobile) {
+			gap: var(--space-gap-sm);
+			padding: var(--space-padding-sm);
+		}
+	}
+
 	.home {
 		width: 100%;
 		max-width: calc(var(--width-content) + var(--width-narrow) + var(--space-5));
 		margin: 0 auto;
-		padding: var(--space-6);
 		display: grid;
 		gap: var(--space-5);
 		align-items: start;
@@ -40,8 +55,10 @@
 		grid-template-columns: minmax(0, 1fr);
 	}
 
-	.span {
-		grid-column: 1 / -1;
+	.stories {
+		width: 100%;
+		max-width: calc(var(--width-content) + var(--width-narrow) + var(--space-5));
+		margin: 0 auto;
 	}
 
 	.col {

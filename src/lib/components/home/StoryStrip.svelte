@@ -137,8 +137,19 @@
 		display: flex;
 		align-items: flex-start;
 		gap: var(--space-3);
-		padding: var(--space-4);
 		overflow-x: auto;
+
+		@media (--mobile) {
+			/*
+			 * break out of parent's padding to make the strip edge-to-edge on mobile
+			 */
+			margin-inline: calc(-1 * var(--space-padding-sm));
+			padding-inline: var(--space-padding-sm);
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+		}
 	}
 
 	.cell {
