@@ -236,6 +236,14 @@ p {
 	background: transparent;
 }
 
+.btn-icon:hover:not(:disabled) {
+	background: var(--color-surface-hover);
+}
+
+.btn-icon:active:not(:disabled) {
+	background: var(--color-surface-active, var(--color-surface-hover));
+}
+
 /* Serif */
 .serif-display {
 	font: 600 32px var(--font-serif);

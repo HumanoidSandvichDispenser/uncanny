@@ -75,6 +75,10 @@ class Accounts {
 		return this.activeId !== undefined && this.map.has(this.activeId);
 	}
 
+	get others(): Account[] {
+		return [...this.map.values()].filter((a) => a.id !== this.activeId);
+	}
+
 	constructor() {
 		this.#load();
 		void this.#rehydrate();
@@ -125,6 +129,24 @@ class Accounts {
 		}
 
 		this.#save();
+	}
+
+	/**
+	 * Log out the active account. Returns `true` if now unauthed.
+	 */
+	async logOut(): Promise<boolean> {
+		const id = this.activeId;
+		if (!id) {
+			return false;
+		}
+
+		try {
+			await this.remove(id);
+		} catch {
+			return false;
+		}
+
+		return !this.isAuthed;
 	}
 
 	switch(id: string) {

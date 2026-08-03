@@ -6,7 +6,10 @@
 	import RecentForumPosts from '$lib/components/home/RecentForumPosts.svelte';
 	import FeedPreview from '$lib/components/home/FeedPreview.svelte';
 	import Pulse from '$lib/components/home/Pulse.svelte';
+	import PageNav from '$lib/components/PageNav.svelte';
 </script>
+
+<PageNav title="Home" />
 
 <main class="home">
 	<div class="span"><StoryStrip /></div>

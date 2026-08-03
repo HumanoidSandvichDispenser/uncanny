@@ -7,6 +7,7 @@
 	import ForumSearchResults from '$lib/components/forum/ForumSearchResults.svelte';
 	import NewFollowedThreadPosts from '$lib/components/forum/NewFollowedThreadPosts.svelte';
 	import { gotoDirection } from '$lib/transition';
+	import PageNav from '$lib/components/PageNav.svelte';
 
 	const term = $derived(page.url.searchParams.get('q')?.trim() ?? '');
 	let draft = $state(page.url.searchParams.get('q')?.trim() ?? '');
@@ -45,6 +46,8 @@
 	}
 </script>
 
+<PageNav title="Forum" />
+
 <main class="page">
 	<header class="head">
 		<h1>Forum</h1>
@@ -79,6 +82,12 @@
 		max-width: var(--width-content);
 		margin: 0 auto;
 		padding: var(--space-padding-xl);
+	}
+
+	@media (max-width: 640px) {
+		.page {
+			padding: var(--space-padding-sm);
+		}
 	}
 
 	.head {

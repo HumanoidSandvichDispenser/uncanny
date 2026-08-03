@@ -3,6 +3,7 @@
 	import { createInfiniteQuery } from '@tanstack/svelte-query';
 	import { accounts } from '$lib/accounts.svelte';
 	import ThreadCard from '$lib/components/forum/ThreadCard.svelte';
+	import PageNav from '$lib/components/PageNav.svelte';
 
 	const category = $derived(page.params.category!);
 
@@ -22,6 +23,8 @@
 	const first = $derived(threads.data?.pages[0]);
 	const title = $derived(first?.name || category);
 </script>
+
+<PageNav {title} />
 
 <main class="page">
 	<header class="head">

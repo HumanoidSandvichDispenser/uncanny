@@ -244,6 +244,10 @@
 		.page {
 			padding: 0;
 		}
+
+		.crumb {
+			display: none;
+		}
 	}
 
 	.head {

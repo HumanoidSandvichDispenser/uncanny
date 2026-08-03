@@ -7,32 +7,12 @@
 	import PlusIcon from 'phosphor-svelte/lib/PlusIcon';
 	import SignOutIcon from 'phosphor-svelte/lib/SignOutIcon';
 	import { accounts } from '$lib/accounts.svelte';
-	import { getPageNav } from '$lib/nav.svelte';
+	import { getPageNav, navLinks, isActive } from '$lib/nav.svelte';
 	import UserAvatar from './UserAvatar.svelte';
 
 	const pageNav = getPageNav();
 
-	const links: { href: string, label: string }[] = [
-		{
-			href: '/',
-			label: 'Home'
-		},
-		{
-			href: '/messages',
-			label: 'Messages'
-		},
-		{
-			href: '/forum',
-			label: 'Forum'
-		}
-	];
-
 	const active = $derived(accounts.active);
-	const others = $derived([...accounts.map.values()].filter((a) => a.id !== accounts.activeId));
-
-	function isActive(href: string): boolean {
-		return href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href);
-	}
 
 	function switchTo(id: string) {
 		accounts.switch(id);
@@ -43,18 +23,7 @@
 	}
 
 	async function logOut() {
-		const id = accounts.activeId;
-		if (!id) {
-			return;
-		}
-
-		try {
-			await accounts.remove(id);
-		} catch {
-			return;
-		}
-
-		if (!accounts.isAuthed) {
+		if (await accounts.logOut()) {
 			goto('/login');
 		}
 	}
@@ -64,10 +33,10 @@
 	<a class="brand" href="/">uncanny</a>
 
 	<nav class="nav">
-		{#each links as link (link.href)}
+		{#each navLinks as link (link.href)}
 			<a
 				class="link label-sm"
-				class:active={isActive(link.href)}
+				class:active={isActive(link.href, page.url.pathname)}
 				href={link.href}
 				data-nav="replace"
 				data-sveltekit-replacestate
@@ -112,13 +81,13 @@
 						</div>
 					</DropdownMenu.Item>
 
-					{#if others.length}
+					{#if accounts.others.length}
 						<DropdownMenu.Separator class="menu-sep" />
 						<DropdownMenu.Group>
 							<DropdownMenu.GroupHeading class="menu-heading label-xs">
 								Switch account
 							</DropdownMenu.GroupHeading>
-							{#each others as acc (acc.id)}
+							{#each accounts.others as acc (acc.id)}
 								<DropdownMenu.Item class="menu-item" onSelect={() => switchTo(acc.id)}>
 									<UserAvatar name={acc.id} size={28} />
 									<span class="label-sm">{acc.username}</span>
@@ -153,6 +122,13 @@
 		position: sticky;
 		top: 0;
 		z-index: var(--z-sticky);
+	}
+
+	/* Mobile uses the compact MobileNav (back + title + hamburger) instead. */
+	@media (max-width: 640px) {
+		.navbar {
+			display: none;
+		}
 	}
 
 	.brand {

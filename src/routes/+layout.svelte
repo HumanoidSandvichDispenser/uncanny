@@ -8,8 +8,9 @@
 	import { goto, onNavigate } from '$app/navigation';
 	import { takeDirection, setActiveTransition, type Direction } from '$lib/transition';
 	import { accounts } from '$lib/accounts.svelte';
-	import { PageNav, setPageNav } from '$lib/nav.svelte';
+	import { PageNav, setPageNav, navHistory } from '$lib/nav.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import MobileNav from '$lib/components/MobileNav.svelte';
 	import '$lib/assets/design-system.css';
 	import '$lib/assets/components.css';
 
@@ -49,10 +50,6 @@
 	});
 
 	onNavigate((navigation) => {
-		if (!document.startViewTransition) {
-			return;
-		}
-
 		let from: Direction | null = null;
 
 		if (navigation.type === 'link') {
@@ -67,7 +64,13 @@
 			takeDirection() ??
 			(navigation.type === 'popstate' && (navigation.delta ?? 0) < 0 ? 'back' : 'forward');
 
-		if (direction === 'none') {
+		if (navigation.type === 'popstate') {
+			navHistory.depth = Math.max(0, navHistory.depth + (navigation.delta ?? 0));
+		} else if (direction !== 'replace') {
+			navHistory.depth += 1;
+		}
+
+		if (!document.startViewTransition || direction === 'none') {
 			return;
 		}
 
@@ -112,6 +115,7 @@
 	<div class="app">
 		{#if accounts.isAuthed}
 			<Navbar />
+			<MobileNav />
 		{/if}
 		<div class="main" bind:this={mainEl}>
 			{@render children()}
@@ -160,6 +164,11 @@
 		.main {
 			overflow-y: auto;
 			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+		}
+
+		.main::-webkit-scrollbar {
+			display: none;
 		}
 
 		:global(::view-transition-group(root)) {
