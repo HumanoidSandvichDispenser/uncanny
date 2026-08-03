@@ -16,12 +16,16 @@
 	}));
 
 	const error = $derived(queryError(followed));
+
+	const unreadThreads = $derived(
+		followed.data?.threads.filter((thread) => thread.new) ?? []
+	);
 </script>
 
 <section class="widget">
 	<div class="head">
-		<h3>Threads you follow</h3>
-		<a class="view-all label-sm" href="/forum/followed">
+		<h3>New in followed threads</h3>
+		<a class="view-all label-sm" href="/forum/{'followed'}">
 			View all
 			<ArrowRightIcon />
 		</a>
@@ -32,11 +36,11 @@
 	{:else if error}
 		<p class="empty-msg text-sm error">{error}</p>
 	{:else if followed.isSuccess}
-		{#if followed.data.threads.length === 0}
+		{#if unreadThreads.length === 0}
 			<p class="empty-msg text-sm">No new posts in threads you follow.</p>
 		{:else}
 			<ul class="list-card">
-				{#each followed.data.threads as thread (thread.id)}
+				{#each unreadThreads as thread (thread.id)}
 					<li>
 						<PostSummaryCard post={thread.lastPost} threadTitle={thread.title} />
 					</li>
