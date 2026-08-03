@@ -240,7 +240,7 @@
 		padding: var(--space-padding-xl);
 	}
 
-	@media (max-width: 640px) {
+	@media (--media) {
 		.page {
 			padding: 0;
 		}

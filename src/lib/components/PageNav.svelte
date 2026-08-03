@@ -5,7 +5,8 @@
 	let {
 		title = null,
 		showTitle = true,
-		controls = null
+		controls = null,
+		chrome = 'default'
 	}: {
 		title?: string | null;
 
@@ -21,6 +22,12 @@
 		 * Additional controls to the navbar, such as search or action buttons.
 		 */
 		controls?: Snippet | null;
+
+		/**
+		 * Set to 'none' to suppress the shared chrome (Navbar/MobileNav)
+		 * entirely, for pages that render their own.
+		 */
+		chrome?: 'default' | 'none';
 	} = $props();
 
 	const nav = getPageNav();
@@ -29,6 +36,7 @@
 		nav.title = title;
 		nav.controls = controls;
 		nav.showTitle = showTitle;
+		nav.chrome = chrome;
 		return () => nav.reset();
 	});
 </script>

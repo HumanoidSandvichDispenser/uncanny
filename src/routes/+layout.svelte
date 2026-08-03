@@ -22,7 +22,8 @@
 	const queryClient = new QueryClient();
 
 	// Routes can push a title/controls into the navbar via this shared store.
-	setPageNav(new PageNav());
+	const pageNav = new PageNav();
+	setPageNav(pageNav);
 
 	$effect(() => {
 		if (!accounts.isAuthed && page.url.pathname !== '/login') {
@@ -113,7 +114,7 @@
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 <QueryClientProvider client={queryClient}>
 	<div class="app">
-		{#if accounts.isAuthed}
+		{#if accounts.isAuthed && pageNav.chrome === 'default'}
 			<Navbar />
 			<MobileNav />
 		{/if}

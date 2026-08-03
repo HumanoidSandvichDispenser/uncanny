@@ -38,7 +38,9 @@
 		staleTime: 30_000
 	}));
 
-	const storyUsers = $derived(stories.data?.stories.map((s) => s.userId) ?? []);
+	const storyUsers = $derived([
+		...new Set(stories.data?.stories.map((s) => s.userId) ?? [])
+	]);
 
 	const sortedFollows = $derived.by(() => {
 		return follows.data?.follows
