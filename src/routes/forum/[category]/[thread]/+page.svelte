@@ -5,12 +5,10 @@
 	import ArrowLineUpIcon from 'phosphor-svelte/lib/ArrowLineUpIcon';
 	import ArrowLineDownIcon from 'phosphor-svelte/lib/ArrowLineDownIcon';
 	import { accounts } from '$lib/accounts.svelte';
-	import { getPageNav } from '$lib/nav.svelte';
+	import PageNav from '$lib/components/PageNav.svelte';
 	import { observeVisible } from '$lib/actions/observeVisible';
 	import PostCard from '$lib/components/forum/PostCard.svelte';
 	import { transitionSettled } from '$lib/transition';
-
-	const pageNav = getPageNav();
 
 	const category = $derived(page.params.category!);
 	const threadId = $derived(Number(page.params.thread));
@@ -152,16 +150,10 @@
 		pendingScroll = 'bottom';
 	}
 
-	$effect(() => {
-		pageNav.title = title;
-	});
-
-	$effect(() => {
-		pageNav.content = controls;
-	});
-
-	$effect(() => () => pageNav.reset());
+	let headerVisible = $state(true);
 </script>
+
+<PageNav {title} showTitle={!headerVisible} {controls} />
 
 <main class="page">
 	<a
@@ -172,7 +164,7 @@
 		{category}
 	</a>
 
-	<header class="head" use:observeVisible={(visible) => (pageNav.visible = !visible)}>
+	<header class="head" use:observeVisible={(visible) => (headerVisible = visible)}>
 		<div class="titlebar">
 			<h1>{title}</h1>
 			{#if meta?.locked}

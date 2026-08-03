@@ -78,14 +78,14 @@
 	</nav>
 
 	<div class="pushed">
-		{#if pageNav.visible && pageNav.title}
+		{#if pageNav.showTitle && pageNav.title}
 			<div class="pushed-inner" in:fade={{ duration: 120 }}>
 				<span class="pushed-title">
 					{pageNav.title}
 				</span>
-				{#if pageNav.content}
+				{#if pageNav.controls}
 					<div class="pushed-content">
-						{@render pageNav.content()}
+						{@render pageNav.controls()}
 					</div>
 				{/if}
 			</div>
