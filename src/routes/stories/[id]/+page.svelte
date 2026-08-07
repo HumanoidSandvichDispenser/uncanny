@@ -4,26 +4,17 @@
 	import XIcon from 'phosphor-svelte/lib/XIcon';
 	import CaretLeftIcon from 'phosphor-svelte/lib/CaretLeftIcon';
 	import CaretRightIcon from 'phosphor-svelte/lib/CaretRightIcon';
-	import type { Story, StoryBackground } from '@sandvichxyz/pecans';
+	import type { Story } from '@sandvichxyz/pecans';
 	import { accounts } from '$lib/accounts.svelte';
 	import { batched } from '$lib/batch';
 	import { displayName } from '$lib/profiles.svelte';
-	import { imageUrl } from '$lib/imageCache.svelte';
 	import { navHistory } from '$lib/nav.svelte';
 	import { gotoDirection } from '$lib/transition';
 	import { overrideThemeColor } from '$lib/themeColor';
 	import PageNav from '$lib/components/PageNav.svelte';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
+	import StoryBackground from '$lib/components/stories/StoryBackground.svelte';
 	import StoryProgress from '$lib/components/stories/StoryProgress.svelte';
-
-	// HACK: pecans currently has wrong type for StoryBackground
-	type RawBackground = StoryBackground & {
-		isSolid?: boolean;
-		color?: [number, number, number];
-		isGradient?: boolean;
-		fromColor?: [number, number, number];
-		toColor?: [number, number, number];
-	};
 
 	const activeId = $derived(accounts.activeId);
 
@@ -76,32 +67,6 @@
 
 	const name = $derived(story ? displayName(story.userId) : '');
 
-	const background = $derived((story?.background as RawBackground | null) ?? null);
-
-	const bgUrl = $derived(
-		background?.isImage && background.imageId ? imageUrl(background.imageId) : null
-	);
-
-	/** CSS background for solid/gradient stories; null when the background is an image. */
-	const bgStyle = $derived.by(() => {
-		if (!background) {
-			return null;
-		}
-
-		if (background.isSolid && background.color) {
-			return tupleRgb(background.color);
-		}
-
-		if (background.isGradient && background.fromColor && background.toColor) {
-			const from = background.fromColor;
-			const to = background.toColor;
-
-			return `linear-gradient(160deg, ${tupleRgb(from)}, ${tupleRgb(to)})`;
-		}
-
-		return null;
-	});
-
 	const LINE_POSITIONS = ['top', 'middle', 'bottom'] as const;
 
 	let held = $state(false);
@@ -113,10 +78,6 @@
 	}
 
 	/** Background colors arrive as raw `[r, g, b]` tuples, unlike normalized text colors. */
-	function tupleRgb(color: [number, number, number]): string {
-		return `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-	}
-
 	function go(delta: number) {
 		const target = items[currentPos + delta];
 
@@ -170,11 +131,8 @@
 		</div>
 	{:else}
 		<div class="stage">
-			<div class="card" style:background={bgStyle ?? undefined}>
-				{#if bgUrl}
-					<img class="bg cover" src={bgUrl} alt="" />
-					<img class="bg contain" src={bgUrl} alt="" />
-				{/if}
+			<div class="card">
+				<StoryBackground background={story.background} />
 
 				{#each LINE_POSITIONS as pos (pos)}
 					{#if story.text?.[pos]?.value}
@@ -263,25 +221,6 @@
 			max-width: calc(100vw - 2 * var(--space-6));
 			border-radius: var(--radius-xl);
 		}
-	}
-
-	.bg {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-	}
-
-	.bg.cover {
-		object-fit: cover;
-		transform: scale(1.1);
-		filter: blur(20px) brightness(0.8);
-	}
-
-	.bg.contain {
-		object-fit: contain;
-		image-rendering: pixelated;
-		filter: drop-shadow(0 16px 32px rgb(0 0 0 / 0.45));
 	}
 
 	.line {
