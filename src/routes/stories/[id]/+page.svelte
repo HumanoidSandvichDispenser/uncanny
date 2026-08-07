@@ -14,6 +14,7 @@
 	import { overrideThemeColor } from '$lib/themeColor';
 	import PageNav from '$lib/components/PageNav.svelte';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
+	import StoryProgress from '$lib/components/stories/StoryProgress.svelte';
 
 	// HACK: pecans currently has wrong type for StoryBackground
 	type RawBackground = StoryBackground & {
@@ -100,9 +101,6 @@
 
 		return null;
 	});
-
-	/** How long a story stays on screen before auto-advancing. */
-	const DURATION = 6000;
 
 	const LINE_POSITIONS = ['top', 'middle', 'bottom'] as const;
 
@@ -198,22 +196,12 @@
 				</div>
 
 				<header class="chrome-top">
-					<div class="segments" aria-hidden="true">
-						{#each items as it, i (it.userId + ':' + it.n)}
-							<span class="seg">
-								{#if i < currentPos}
-									<span class="fill done"></span>
-								{:else if i === currentPos}
-									<span
-										class="fill run"
-										class:held
-										style:animation-duration="{DURATION}ms"
-										onanimationend={() => go(1)}
-									></span>
-								{/if}
-							</span>
-						{/each}
-					</div>
+					<StoryProgress
+						count={items.length}
+						current={currentPos}
+						held={held}
+						onadvance={() => go(1)}
+					/>
 
 					<div class="bar">
 						<a class="who" href="/users/{story.userId}">
@@ -358,47 +346,6 @@
 		/* viewport-fit=cover puts the card under the notch/status bar. */
 		padding-top: max(var(--space-3), env(safe-area-inset-top));
 		background: linear-gradient(rgb(0 0 0 / 0.45), transparent);
-	}
-
-	.segments {
-		display: flex;
-		gap: var(--space-1);
-	}
-
-	.seg {
-		flex: 1;
-		height: 3px;
-		border-radius: var(--radius-full);
-		background: rgb(255 255 255 / 0.35);
-		overflow: hidden;
-	}
-
-	.fill {
-		display: block;
-		height: 100%;
-		background: #fff;
-		transform-origin: left;
-	}
-
-	.fill.done {
-		transform: scaleX(1);
-	}
-
-	.fill.run {
-		animation: story-progress linear forwards;
-	}
-
-	.fill.run.held {
-		animation-play-state: paused;
-	}
-
-	@keyframes story-progress {
-		from {
-			transform: scaleX(0);
-		}
-		to {
-			transform: scaleX(1);
-		}
 	}
 
 	.bar {
