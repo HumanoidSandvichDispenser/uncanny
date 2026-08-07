@@ -4,6 +4,7 @@
 	import { accounts } from '$lib/accounts.svelte';
 	import { batched } from '$lib/batch';
 	import { displayName, profileCache, profileStatus } from '$lib/profiles.svelte';
+	import { followsQuery } from '$lib/follows';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
 	import PlusIcon from 'phosphor-svelte/lib/PlusIcon';
 	import UsersIcon from 'phosphor-svelte/lib/UsersIcon';
@@ -17,11 +18,7 @@
 		staleTime: 30_000
 	}));
 
-	const follows = createQuery(() => ({
-		queryKey: ['follows', activeId],
-		queryFn: () => batched(accounts.active!.client.profile.listFollows()),
-		enabled: accounts.isAuthed
-	}));
+	const follows = createQuery(() => followsQuery());
 
 	const online = createQuery(() => ({
 		queryKey: ['online', 'forum', activeId],
@@ -109,7 +106,7 @@
 
 	<span class="divider" role="separator"></span>
 
-	<a class="cell follows" href="/follows">
+	<a class="cell follows" href="/follows?tab=following">
 		<span class="ring outline">
 			<span class="followers-icon">
 				<UsersIcon size={18} />
