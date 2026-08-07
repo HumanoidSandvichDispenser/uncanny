@@ -13,7 +13,8 @@
 	const stories = createQuery(() => ({
 		queryKey: ['stories', activeId],
 		queryFn: () => batched(accounts.active!.client.stories.viewList()),
-		enabled: accounts.isAuthed
+		enabled: accounts.isAuthed,
+		staleTime: 30_000
 	}));
 
 	const follows = createQuery(() => ({
