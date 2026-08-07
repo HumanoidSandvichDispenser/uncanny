@@ -8,10 +8,7 @@ import { accounts } from '$lib/accounts.svelte';
 export function dashboardQueryOptions() {
 	return {
 		queryKey: ['dashboard', accounts.activeId],
-		queryFn: async () => {
-			const client = accounts.active!.client;
-			return await batched(client, client.dashboard.get());
-		},
+		queryFn: () => batched(accounts.active!.client.dashboard.get()),
 		enabled: accounts.isAuthed
 	};
 }

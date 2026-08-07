@@ -6,10 +6,7 @@
 
 	const categories = createQuery(() => ({
 		queryKey: ['forum', 'categories', accounts.activeId],
-		queryFn: async () => {
-			const client = accounts.active!.client;
-			return await batched(client, client.forum.categoriesGet());
-		},
+		queryFn: () => batched(accounts.active!.client.forum.categoriesGet()),
 		enabled: accounts.isAuthed
 	}));
 

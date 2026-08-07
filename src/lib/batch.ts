@@ -1,4 +1,4 @@
-import type { Call, Client } from '@sandvichxyz/pecans';
+import type { Call, BaseClient } from '@sandvichxyz/pecans';
 
 type Enqueue = <T>(call: Call<T>) => Promise<T>;
 
@@ -8,7 +8,7 @@ type Pending = {
 	reject: (error: unknown) => void;
 };
 
-function createBatcher(client: Client): Enqueue {
+function createBatcher(client: BaseClient): Enqueue {
 	let queue: Pending[] = [];
 	let scheduled = false;
 
@@ -55,22 +55,22 @@ function createBatcher(client: Client): Enqueue {
 	};
 }
 
-const batchers = new WeakMap<Client, Enqueue>();
+const batchers = new WeakMap<BaseClient, Enqueue>();
 
 /**
- * Enqueue a pecans call for batching. Every call enqueued against the same
- * client within one tick is flushed as a single `client.batch()` request.
+ * Enqueue a pecans call for batching. Every call enqueued within one tick is
+ * flushed as a single `client.batch()` request against the client the call
+ * belongs to.
  *
- * @param client The client the call belongs to.
  * @param call The lazy call to send.
  * @returns The call's typed result.
  */
-export function batched<T>(client: Client, call: Call<T>): Promise<T> {
-	let enqueue = batchers.get(client);
+export function batched<T>(call: Call<T>): Promise<T> {
+	let enqueue = batchers.get(call.client);
 
 	if (enqueue === undefined) {
-		enqueue = createBatcher(client);
-		batchers.set(client, enqueue);
+		enqueue = createBatcher(call.client);
+		batchers.set(call.client, enqueue);
 	}
 
 	return enqueue(call);

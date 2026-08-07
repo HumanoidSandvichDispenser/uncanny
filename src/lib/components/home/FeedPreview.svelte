@@ -15,10 +15,7 @@
 
 	const feed = createQuery(() => ({
 		queryKey: ['feed', 'preview', accounts.activeId],
-		queryFn: async () => {
-			const client = accounts.active!.client;
-			return await batched(client, client.feed.start(null, PREVIEW_SIZE));
-		},
+		queryFn: () => batched(accounts.active!.client.feed.start(null, PREVIEW_SIZE)),
 		enabled: accounts.isAuthed
 	}));
 

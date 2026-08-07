@@ -12,28 +12,19 @@
 
 	const stories = createQuery(() => ({
 		queryKey: ['stories', activeId],
-		queryFn: async () => {
-			const client = accounts.active!.client;
-			return await batched(client, client.stories.viewList());
-		},
+		queryFn: () => batched(accounts.active!.client.stories.viewList()),
 		enabled: accounts.isAuthed
 	}));
 
 	const follows = createQuery(() => ({
 		queryKey: ['follows', activeId],
-		queryFn: async () => {
-			const client = accounts.active!.client;
-			return await batched(client, client.profile.listFollows());
-		},
+		queryFn: () => batched(accounts.active!.client.profile.listFollows()),
 		enabled: accounts.isAuthed
 	}));
 
 	const online = createQuery(() => ({
 		queryKey: ['online', 'forum', activeId],
-		queryFn: async () => {
-			const client = accounts.active!.client;
-			return await batched(client, client.notify.fetchOnlineUsers(Feature.FORUM));
-		},
+		queryFn: () => batched(accounts.active!.client.notify.fetchOnlineUsers(Feature.FORUM)),
 		enabled: accounts.isAuthed,
 		staleTime: 30_000
 	}));

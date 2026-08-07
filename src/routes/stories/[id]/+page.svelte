@@ -20,10 +20,7 @@
 
 	const storiesQuery = createQuery(() => ({
 		queryKey: ['stories', activeId],
-		queryFn: async () => {
-			const client = accounts.active!.client;
-			return await batched(client, client.stories.viewList());
-		},
+		queryFn: () => batched(accounts.active!.client.stories.viewList()),
 		enabled: accounts.isAuthed
 	}));
 

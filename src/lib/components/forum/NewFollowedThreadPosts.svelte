@@ -8,10 +8,7 @@
 
 	const followed = createQuery(() => ({
 		queryKey: ['forum', 'threads', 'followed', accounts.activeId],
-		queryFn: async () => {
-			const client = accounts.active!.client;
-			return await batched(client, client.forum.threadList('followed'));
-		},
+		queryFn: () => batched(accounts.active!.client.forum.threadList('followed')),
 		enabled: accounts.isAuthed
 	}));
 
