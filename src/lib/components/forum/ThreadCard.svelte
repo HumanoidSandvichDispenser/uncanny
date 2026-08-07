@@ -13,13 +13,15 @@
 
 <a class="row" href="/forum/{thread.category}/{thread.id}{thread.new ? '?view=new' : ''}">
 	<div class="main-col">
-		<span class="label-md title">
-			<h2 class="h3">
-				{thread.title}
-			</h2>
-			{#if thread.new}
-				<span class="badge label-xs">new</span>
-			{/if}
+		<span class="label-md headline">
+			<div class="title">
+				<h2 class="h3">
+					{thread.title}
+				</h2>
+				{#if thread.new}
+					<span class="badge label-xs">new</span>
+				{/if}
+			</div>
 			<span class="replies text-xs sub" title="{thread.replies} replies">
 				<ChatCircleIcon weight="fill" />
 				{thread.replies}
@@ -31,7 +33,7 @@
 			<span class="text-lg sub">&middot;</span>
 			<div class="text-xs sub">{relativeTime(first.time)}</div>
 		</div>
-		<span>
+		<span class="thread-preview">
 			{first.text}
 		</span>
 		{#if last.id !== first.id}
@@ -59,12 +61,15 @@
 	.row {
 		display: flex;
 		align-items: center;
-		gap: var(--space-4);
 		padding: var(--space-padding-lg);
 		background: var(--color-bg-card);
 		border: var(--border-thin) solid var(--color-border);
 		border-radius: var(--radius-lg);
 		color: var(--color-text);
+
+		@media (--mobile) {
+			padding: var(--space-padding-sm);
+		}
 	}
 
 	.row:hover {
@@ -81,15 +86,31 @@
 	.main-col {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-3);
+		gap: var(--space-gap-sm);
 		min-width: 0;
 		flex: 1;
+
+		@media (--mobile) {
+			gap: var(--space-gap-xs);
+		}
+	}
+
+	.headline {
+		display: flex;
+		gap: var(--space-gap-sm);
 	}
 
 	.title {
+		min-width: 0;
 		display: flex;
 		align-items: center;
-		gap: var(--space-2);
+		gap: var(--space-gap-xs);
+	}
+
+	.title h2 {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.replies {
@@ -120,6 +141,15 @@
 	.user-col {
 		display: flex;
 		flex-direction: column;
+	}
+
+	.thread-preview {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		line-clamp: 2;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
 	}
 
 	.last-post {

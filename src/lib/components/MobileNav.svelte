@@ -47,6 +47,8 @@
 		<div class="controls">{@render pageNav.controls()}</div>
 	{/if}
 
+	<PlusIcon size={22} weight="bold" />
+
 	<Dialog.Root bind:open>
 		<Dialog.Trigger class="btn btn-icon" aria-label="Menu">
 			<ListIcon size={22} weight="bold" />
@@ -110,9 +112,8 @@
 		display: none;
 		align-items: center;
 		gap: var(--space-2);
-		padding: var(--space-2) var(--space-3);
+		padding: var(--space-padding-xs) var(--space-padding-sm);
 		background: var(--color-bg-card);
-		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 
 	@media (--mobile) {
@@ -127,7 +128,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		font-size: var(--text-md);
+		font-size: var(--text-lg);
 		font-weight: 600;
 		color: var(--color-text);
 	}
@@ -204,6 +205,7 @@
 		align-items: center;
 		gap: var(--space-3);
 		padding: var(--space-3);
+		border: none;
 		border-radius: var(--radius-md);
 		color: var(--color-text);
 		text-align: left;

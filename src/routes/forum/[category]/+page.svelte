@@ -64,6 +64,7 @@
 
 <style>
 	.page {
+		width: 100%;
 		max-width: var(--width-content);
 		margin: 0 auto;
 		padding: var(--space-padding-xl);

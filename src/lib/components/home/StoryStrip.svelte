@@ -79,7 +79,7 @@
 	{#each storyUsers as id (id)}
 		<a class="cell" href="/stories/{id}" title={displayName(id)}>
 			<span class="ring has">
-				<UserAvatar name={id} size={44} />
+				<UserAvatar name={id} size={40} />
 			</span>
 			<span class="nm text-xs">{displayName(id)}</span>
 		</a>
@@ -91,8 +91,8 @@
 
 	{#each onlineFollows as user (user.id)}
 		<a class="cell" href="/users/{user.id}" title={displayName(user.id)}>
-			<span class="ring plain">
-				<UserAvatar name={user.id} size={44} status />
+			<span class="ring outline">
+				<UserAvatar name={user.id} size={40} status />
 			</span>
 			<span class="nm text-xs">{displayName(user.id)}</span>
 		</a>
@@ -101,7 +101,7 @@
 	{#each topOfflineFollows as user (user.id)}
 		<a class="cell" href="/users/{user.id}" title={displayName(user.id)}>
 			<span class="ring outline">
-				<UserAvatar name={user.id} size={44} status />
+				<UserAvatar name={user.id} size={40} status />
 			</span>
 			<span class="nm text-xs">{displayName(user.id)}</span>
 		</a>
@@ -164,19 +164,39 @@
 	}
 
 	.ring {
+		position: relative;
 		display: grid;
 		place-items: center;
 		width: 3rem;
 		height: 3rem;
 		border-radius: var(--radius-full);
-		padding: 2px;
 	}
 
-	.ring.has {
+	/*
+	 * gradient/solid rings are a masked pseudo-element: the center is punched
+	 * out so the gap between ring and avatar is real transparency. no more
+	 * faking it with a card-colored avatar border, so it works on any
+	 * background.
+	 */
+	.ring.has::before,
+	.ring.plain::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		border-radius: var(--radius-full);
+		padding: 3px;
+		pointer-events: none;
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		-webkit-mask-composite: xor;
+		mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		mask-composite: exclude;
+	}
+
+	.ring.has::before {
 		background: linear-gradient(135deg, var(--color-accent-500), var(--color-error-500));
 	}
 
-	.ring.plain {
+	.ring.plain::before {
 		background: var(--color-border);
 	}
 
@@ -186,13 +206,14 @@
 	}
 
 	.ring.outline {
-		border: 1.5px solid var(--color-border);
+		border: 2px solid var(--color-border);
 		color: var(--color-text-secondary);
 	}
 
-	.ring.has :global(.avatar),
-	.ring.plain :global(.avatar) {
-		border: 2px solid var(--color-bg-card);
+	/* status-dot halo defaults to bg-card (right for card contexts like
+	   PostCard); on the strip the surface is the page background */
+	.ring :global(.status-dot) {
+		box-shadow: 0 0 0 2px var(--color-bg-page);
 	}
 
 	.followers-icon {

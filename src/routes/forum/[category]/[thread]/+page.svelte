@@ -156,22 +156,24 @@
 <PageNav {title} showTitle={!headerVisible} {controls} />
 
 <main class="page">
-	<a
-		class="text-sm crumb"
-		href="/forum/{category}"
-		data-nav="back"
-	>
-		{category}
-	</a>
-
 	<header class="head" use:observeVisible={(visible) => (headerVisible = visible)}>
-		<div class="titlebar">
-			<h1>{title}</h1>
-			{#if meta?.locked}
-				<span class="text-xs sub">Locked</span>
-			{/if}
+		<a
+			class="text-sm crumb"
+			href="/forum/{category}"
+			data-nav="back"
+		>
+			{category}
+		</a>
+
+		<div class="head-inner">
+			<div class="titlebar">
+				<h1>{title}</h1>
+				{#if meta?.locked}
+					<span class="text-xs sub">Locked</span>
+				{/if}
+			</div>
+			<div class="nav">{@render controls()}</div>
 		</div>
-		<div class="nav">{@render controls()}</div>
 	</header>
 
 	{#if view.isPending}
@@ -240,7 +242,7 @@
 		padding: var(--space-padding-xl);
 	}
 
-	@media (--media) {
+	@media (--mobile) {
 		.page {
 			padding: 0;
 		}
@@ -251,12 +253,14 @@
 	}
 
 	.head {
+		padding: var(--space-padding-sm);
+		border-bottom: var(--border-thin) solid var(--color-border);
+	}
+
+	.head-inner {
 		display: flex;
 		align-items: center;
 		gap: var(--space-3);
-		padding-bottom: var(--space-3);
-		margin-bottom: var(--space-padding-md);
-		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 
 	.titlebar {
