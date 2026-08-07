@@ -1,27 +1,25 @@
 <script lang="ts">
-	import { displayName, profileCache } from '$lib/profiles.svelte';
+	import { identity } from '$lib/profiles.svelte';
     import ShieldCheckIcon from 'phosphor-svelte/lib/ShieldCheckIcon';
 
 	let {
 		userId,
         showAdmin = false,
-	}: { userId: string; showAdmin?: boolean } = $props();
+        showId = false,
+	}: { userId: string; showAdmin?: boolean; showId?: boolean } = $props();
 
-    let isAdmin = $derived.by(() => {
-        if (showAdmin) {
-            return profileCache[userId]?.admin ?? false;
-        }
-
-        return false;
-    });
+    let info = $derived(identity(userId));
 </script>
 
 <div class="username-label">
     <a class="name label-md" href="/users/{userId}">
-        {displayName(userId)}
+        {info.name}
     </a>
-    {#if isAdmin}
+    {#if showAdmin && info.isAdmin}
         <ShieldCheckIcon />
+    {/if}
+    {#if showId && info.showId}
+        <span class="id text-sm">@{info.id}</span>
     {/if}
 </div>
 
@@ -36,5 +34,9 @@
 .username-label a {
     color: var(--color-text-secondary);
     font-weight: 600;
+}
+
+.username-label .id {
+    color: var(--color-text-tertiary);
 }
 </style>

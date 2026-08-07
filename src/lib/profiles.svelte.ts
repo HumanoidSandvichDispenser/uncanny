@@ -13,6 +13,36 @@ export function displayName(id: string): string {
 	return profileCache[id]?.name || id;
 }
 
+export type Identity = {
+	/** The user's chosen display name. */
+	name: string;
+	id: string;
+	isAdmin: boolean;
+
+	/**
+	 * Whether the id is worth showing alongside the name. Ids are the display
+	 * name with non-alphanumerics stripped, so for most users the two read as
+	 * the same string and the id is pure noise.
+	 */
+	showId: boolean;
+};
+
+/**
+ * Everything needed to render a user's name, so each call site can lay it out
+ * however it likes without duplicating the lookups.
+ */
+export function identity(id: string): Identity {
+	const name = displayName(id);
+	const slug = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+	return {
+		name,
+		id,
+		isAdmin: profileCache[id]?.admin ?? false,
+		showId: slug !== id.toLowerCase()
+	};
+}
+
 export type ProfileStatus =
 	| 'online'
 	| 'recent'
