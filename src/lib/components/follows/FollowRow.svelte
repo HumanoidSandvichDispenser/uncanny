@@ -97,13 +97,6 @@
 		color: var(--color-text-secondary);
 	}
 
-	.dot {
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: var(--radius-full);
-		background: var(--color-success-500);
-	}
-
 	.action {
 		flex-shrink: 0;
 	}

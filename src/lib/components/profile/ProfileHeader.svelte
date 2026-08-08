@@ -75,7 +75,7 @@
 
 <header class="profile-header">
 	<div class="avatar">
-		<UserAvatar name={userId} size={96} square />
+		<UserAvatar name={userId} size={96} square shadow antialias={false} />
 	</div>
 
 	<div class="identity">

@@ -82,7 +82,7 @@
 	{#each storyUsers as id (id)}
 		<a class="cell" href="/stories/{id}" title={displayName(id)}>
 			<span class="ring has">
-				<UserAvatar name={id} size={avatarSize} />
+				<UserAvatar name={id} size={avatarSize} antialias={false} />
 			</span>
 			<span class="nm text-xs">{displayName(id)}</span>
 		</a>
@@ -95,7 +95,7 @@
 	{#each onlineFollows as user (user.id)}
 		<a class="cell" href="/users/{user.id}" title={displayName(user.id)}>
 			<span class="ring outline">
-				<UserAvatar name={user.id} size={avatarSize} status />
+				<UserAvatar name={user.id} size={avatarSize} status antialias={false} />
 			</span>
 			<span class="nm text-xs">{displayName(user.id)}</span>
 		</a>
@@ -104,7 +104,7 @@
 	{#each topOfflineFollows as user (user.id)}
 		<a class="cell" href="/users/{user.id}" title={displayName(user.id)}>
 			<span class="ring outline">
-				<UserAvatar name={user.id} size={avatarSize} status />
+				<UserAvatar name={user.id} size={avatarSize} status antialias={false} />
 			</span>
 			<span class="nm text-xs">{displayName(user.id)}</span>
 		</a>

@@ -9,8 +9,17 @@
 		name,
 		size = 36,
 		status = false,
-		square = false
-	}: { name: string; size?: number; status?: boolean; square?: boolean } = $props();
+		square = false,
+		shadow = false,
+		antialias = true
+	}: {
+		name: string;
+		size?: number;
+		status?: boolean;
+		square?: boolean;
+		shadow?: boolean;
+		antialias?: boolean;
+	} = $props();
 
 	const seed = $derived(anonSeed(name));
 
@@ -52,6 +61,8 @@
 		<span
 			class="avatar anon"
 			class:square
+			class:shadow
+			class:pixelated={!antialias}
 			style:width="{size}px"
 			style:height="{size}px"
 			style:color={accent}
@@ -65,6 +76,8 @@
 			class="avatar"
 			class:you-anon={isYouAnon}
 			class:square
+			class:shadow
+			class:pixelated={!antialias}
 			src={avatar}
 			alt={label}
 			title={label}
@@ -77,6 +90,8 @@
 			class="avatar initials"
 			class:you-anon={isYouAnon}
 			class:square
+			class:shadow
+			class:pixelated={!antialias}
 			title={label}
 			style:width="{size}px"
 			style:height="{size}px"
@@ -124,7 +139,14 @@
 
 	.avatar.square {
 		border-radius: var(--radius-lg);
+	}
+
+	.avatar.pixelated {
 		image-rendering: pixelated;
+	}
+
+	.avatar.shadow {
+		box-shadow: var(--shadow-sm);
 	}
 
 	.anon {
