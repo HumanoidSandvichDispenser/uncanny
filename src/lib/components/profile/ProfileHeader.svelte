@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { createQuery, createQueries } from '@tanstack/svelte-query';
-	import type { ProfileGet } from '$lib/profile';
 	import { accounts } from '$lib/accounts.svelte';
 	import { identity, getProfile } from '$lib/profiles.svelte';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
@@ -23,13 +22,12 @@
 
 	const profileQuery = createQuery(() => ({
 		queryKey: ['profile', userId],
-		queryFn: async () =>
-			(await batched(accounts.active!.client.profile.get(userId))) as ProfileGet,
+		queryFn: () => batched(accounts.active!.client.profile.get(userId, true)),
 		enabled: accounts.isAuthed,
 		staleTime: 30_000
 	}));
 
-	const following = $derived(profileQuery.data?.follow.following ?? null);
+	const following = $derived(profileQuery.data?.follow?.following ?? null);
 
 	// each field is its own call but batched in one request
 	const FIELDS = {

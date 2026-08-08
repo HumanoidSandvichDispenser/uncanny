@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
-	import type { ListFollowsResponse } from '@sandvichxyz/pecans';
-	import type { ProfileGet } from '$lib/profile';
+	import type { ListFollowsResponse, ProfileGetResponse } from '@sandvichxyz/pecans';
 	import { accounts } from '$lib/accounts.svelte';
 
 	let {
@@ -31,7 +30,7 @@
 
 			const previous = {
 				list: client.getQueryData<ListFollowsResponse>(listKey),
-				profile: client.getQueryData<ProfileGet>(profileKey)
+				profile: client.getQueryData<ProfileGetResponse>(profileKey)
 			};
 
 			client.setQueryData<ListFollowsResponse>(listKey, (old) => {
@@ -47,8 +46,8 @@
 				};
 			});
 
-			client.setQueryData<ProfileGet>(profileKey, (old) => {
-				if (!old?.ok) {
+			client.setQueryData<ProfileGetResponse>(profileKey, (old) => {
+				if (!old?.ok || !old.follow) {
 					return old;
 				}
 
