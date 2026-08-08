@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import type { ListFollowsResponse } from '@sandvichxyz/pecans';
+	import type { ProfileGet } from '$lib/profile';
 	import { accounts } from '$lib/accounts.svelte';
 
 	let {
@@ -22,13 +23,18 @@
 			await accounts.active!.client.profile.toggleFollow(userId, shouldFollow),
 
 		onMutate: async (shouldFollow: boolean) => {
-			const key = ['follows', accounts.activeId];
+			const listKey = ['follows', accounts.activeId];
+			const profileKey = ['profile', userId];
 
-			await client.cancelQueries({ queryKey: key });
+			await client.cancelQueries({ queryKey: listKey });
+			await client.cancelQueries({ queryKey: profileKey });
 
-			const previous = client.getQueryData<ListFollowsResponse>(key);
+			const previous = {
+				list: client.getQueryData<ListFollowsResponse>(listKey),
+				profile: client.getQueryData<ProfileGet>(profileKey)
+			};
 
-			client.setQueryData<ListFollowsResponse>(key, (old) => {
+			client.setQueryData<ListFollowsResponse>(listKey, (old) => {
 				if (!old?.ok) {
 					return old;
 				}
@@ -41,18 +47,28 @@
 				};
 			});
 
-			return { key, previous };
+			client.setQueryData<ProfileGet>(profileKey, (old) => {
+				if (!old?.ok) {
+					return old;
+				}
+
+				return { ...old, follow: { ...old.follow, following: shouldFollow } };
+			});
+
+			return { listKey, profileKey, previous };
 		},
 
 		onError: (_error, _vars, context) => {
 			if (context) {
-				client.setQueryData(context.key, context.previous);
+				client.setQueryData(context.listKey, context.previous.list);
+				client.setQueryData(context.profileKey, context.previous.profile);
 			}
 		},
 
 		onSettled: () => {
 			void client.invalidateQueries({ queryKey: ['follows'] });
 			void client.invalidateQueries({ queryKey: ['followers'] });
+			void client.invalidateQueries({ queryKey: ['profile', userId] });
 		}
 	}));
 </script>

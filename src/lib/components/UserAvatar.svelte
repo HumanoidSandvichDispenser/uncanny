@@ -123,7 +123,7 @@
 	}
 
 	.avatar.square {
-		border-radius: 0;
+		border-radius: var(--radius-lg);
 		image-rendering: pixelated;
 	}
 

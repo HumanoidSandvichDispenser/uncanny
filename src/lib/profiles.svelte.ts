@@ -18,13 +18,6 @@ export type Identity = {
 	name: string;
 	id: string;
 	isAdmin: boolean;
-
-	/**
-	 * Whether the id is worth showing alongside the name. Ids are the display
-	 * name with non-alphanumerics stripped, so for most users the two read as
-	 * the same string and the id is pure noise.
-	 */
-	showId: boolean;
 };
 
 /**
@@ -39,7 +32,6 @@ export function identity(id: string): Identity {
 		name,
 		id,
 		isAdmin: profileCache[id]?.admin ?? false,
-		showId: slug !== id.toLowerCase()
 	};
 }
 

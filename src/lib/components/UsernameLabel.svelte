@@ -5,8 +5,7 @@
 	let {
 		userId,
         showAdmin = false,
-        showId = false,
-	}: { userId: string; showAdmin?: boolean; showId?: boolean } = $props();
+	}: { userId: string; showAdmin?: boolean } = $props();
 
     let info = $derived(identity(userId));
 </script>
@@ -17,9 +16,6 @@
     </a>
     {#if showAdmin && info.isAdmin}
         <ShieldCheckIcon />
-    {/if}
-    {#if showId && info.showId}
-        <span class="id text-sm">@{info.id}</span>
     {/if}
 </div>
 
@@ -34,9 +30,5 @@
 .username-label a {
     color: var(--color-text-secondary);
     font-weight: 600;
-}
-
-.username-label .id {
-    color: var(--color-text-tertiary);
 }
 </style>

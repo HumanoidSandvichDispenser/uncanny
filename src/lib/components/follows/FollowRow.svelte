@@ -26,9 +26,7 @@
 					<ShieldCheckIcon />
 				{/if}
 			</span>
-			{#if info.showId}
-				<span class="id text-sm">@{info.id}</span>
-			{/if}
+			<span class="id text-sm">@{info.id}</span>
 		</span>
 	</a>
 
