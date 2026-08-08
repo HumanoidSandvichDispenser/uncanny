@@ -39,7 +39,7 @@
 
 	const sortedFollows = $derived.by(() => {
 		return follows.data?.follows
-			.sort((a, b) => {
+			.toSorted((a, b) => {
 				return profileCache[b.id]?.online - profileCache[a.id]?.online;
 			});
 	});
