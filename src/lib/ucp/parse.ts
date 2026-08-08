@@ -343,13 +343,26 @@ function flatten(nodes: Node[], marks: Mark[], out: TextRun[]): void {
 
 			case 'tag':
 				if (node.tag.link) {
-					const href = linkHref(node.children);
+					const url = findUrl(node.children);
+
+					// nothing to point at, so the tag contributes no link
+					if (url === null) {
+						flatten(trimEdges(node.children), marks, out);
+						break;
+					}
 
 					const next = marks.some((m) => m.type === 'link')
 						? marks
-						: addMark(marks, { type: 'link', href });
+						: addMark(marks, { type: 'link', href: url });
 
-					flatten(node.children, next, out);
+					// the url supplies the href, so it isn't also the label
+					const label = dropUrl(node.children, url);
+
+					if (plainText(label).trim() === '') {
+						pushRun(out, url, next);
+					} else {
+						flatten(trimEdges(label), next, out);
+					}
 				} else if (node.tag.mark) {
 					flatten(node.children, addMark(marks, node.tag.mark), out);
 				} else {
@@ -361,14 +374,50 @@ function flatten(nodes: Node[], marks: Mark[], out: TextRun[]): void {
 	}
 }
 
-function linkHref(children: Node[]): string {
-	const url = findUrl(children);
+function dropUrl(nodes: Node[], url: string): Node[] {
+	let dropped = false;
 
-	if (url !== null) {
-		return url;
+	const walk = (list: Node[]): Node[] => {
+		const out: Node[] = [];
+
+		for (const node of list) {
+			if (!dropped && node.t === 'url' && node.s === url) {
+				dropped = true;
+				continue;
+			}
+
+			if (node.t === 'tag') {
+				out.push({ ...node, children: walk(node.children) });
+				continue;
+			}
+
+			out.push(node);
+		}
+
+		return out;
+	};
+
+	return walk(nodes);
+}
+
+// removing the url leaves the space that separated it from the label, which
+// would otherwise sit inside the underline
+function trimEdges(nodes: Node[]): Node[] {
+	const out = [...nodes];
+
+	const first = out[0];
+
+	if (first?.t === 'text') {
+		out[0] = { ...first, s: first.s.trimStart() };
 	}
 
-	return plainText(children).trim();
+	const last = out[out.length - 1];
+
+	if (last?.t === 'text') {
+		out[out.length - 1] = { ...last, s: last.s.trimEnd() };
+	}
+
+	return out.filter((node) => node.t !== 'text' || node.s !== '');
 }
 
 function findUrl(nodes: Node[]): string | null {

@@ -74,6 +74,28 @@ describe('inline parsing', () => {
 		]);
 	});
 
+	it('uses the url as the label when the link tag holds nothing else', () => {
+		expect(inline('<link>https://x.com/a</link>')).toEqual([
+			run('https://x.com/a', 'link:https://x.com/a')
+		]);
+	});
+
+	it('keeps the url out of the label when the link tag has text', () => {
+		expect(inline('<link>https://x.com/a Click here</link>')).toEqual([
+			run('Click here', 'link:https://x.com/a')
+		]);
+	});
+
+	it('keeps marks on the label of a link tag', () => {
+		expect(inline('<link>https://x.com/a <b>Click</b></link>')).toEqual([
+			run('Click', 'link:https://x.com/a', 'bold')
+		]);
+	});
+
+	it('renders a link tag with no url as plain text', () => {
+		expect(inline('<link>x.com</link>')).toEqual([run('x.com')]);
+	});
+
 	it('parses a color tag', () => {
 		expect(inline('<red>hot</red>')).toEqual([run('hot', 'color:red')]);
 	});
