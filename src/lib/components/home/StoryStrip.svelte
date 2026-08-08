@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { MediaQuery } from 'svelte/reactivity';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { Feature } from '@sandvichxyz/pecans';
 	import { accounts } from '$lib/accounts.svelte';
@@ -10,6 +11,11 @@
 	import UsersIcon from 'phosphor-svelte/lib/UsersIcon';
 
 	const activeId = $derived(accounts.activeId);
+
+	// UserAvatar sizes itself with inline styles, so the breakpoint has to be
+	// read here rather than in CSS. keep in sync with --mobile.
+	const mobile = new MediaQuery('(width < 640px)');
+	const avatarSize = $derived(mobile.current ? 64 : 40);
 
 	const stories = createQuery(() => ({
 		queryKey: ['stories', activeId],
@@ -76,7 +82,7 @@
 	{#each storyUsers as id (id)}
 		<a class="cell" href="/stories/{id}" title={displayName(id)}>
 			<span class="ring has">
-				<UserAvatar name={id} size={40} />
+				<UserAvatar name={id} size={avatarSize} />
 			</span>
 			<span class="nm text-xs">{displayName(id)}</span>
 		</a>
@@ -89,7 +95,7 @@
 	{#each onlineFollows as user (user.id)}
 		<a class="cell" href="/users/{user.id}" title={displayName(user.id)}>
 			<span class="ring outline">
-				<UserAvatar name={user.id} size={40} status />
+				<UserAvatar name={user.id} size={avatarSize} status />
 			</span>
 			<span class="nm text-xs">{displayName(user.id)}</span>
 		</a>
@@ -98,7 +104,7 @@
 	{#each topOfflineFollows as user (user.id)}
 		<a class="cell" href="/users/{user.id}" title={displayName(user.id)}>
 			<span class="ring outline">
-				<UserAvatar name={user.id} size={40} status />
+				<UserAvatar name={user.id} size={avatarSize} status />
 			</span>
 			<span class="nm text-xs">{displayName(user.id)}</span>
 		</a>
@@ -154,6 +160,10 @@
 		background: none;
 		color: var(--color-text-secondary);
 		cursor: pointer;
+
+		@media (--mobile) {
+			width: 4.5rem;
+		}
 	}
 
 	.cell:hover {
@@ -167,6 +177,11 @@
 		width: 3rem;
 		height: 3rem;
 		border-radius: var(--radius-full);
+
+		@media (--mobile) {
+			width: 4rem;
+			height: 4rem;
+		}
 	}
 
 	/*

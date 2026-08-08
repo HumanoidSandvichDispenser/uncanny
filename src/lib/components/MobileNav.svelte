@@ -128,7 +128,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		font-size: var(--text-lg);
+		font-size: var(--text-xl);
 		font-weight: 600;
 		color: var(--color-text);
 	}

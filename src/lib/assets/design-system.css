@@ -99,9 +99,18 @@
 	--text-sm: 13px;
 	--text-md: 14px;
 	--text-lg: 15px;
+	--text-xl: 16px;
 	--label-xs: 11px;
 	--label-sm: 12px;
 	--label-md: 14px;
+
+	--text-body: var(--text-md);
+}
+
+@media (width < 640px) {
+	:root {
+		--text-body: var(--text-lg);
+	}
 }
 
 /* UI Display */
@@ -143,7 +152,7 @@ h6,
 /* UI Body */
 body,
 p {
-	font: 400 var(--text-md) var(--font-ui);
+	font: 400 var(--text-body) var(--font-ui);
 	line-height: 1.5;
 	color: var(--color-text);
 }
