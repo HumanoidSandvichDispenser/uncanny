@@ -4,6 +4,7 @@
 	import { accounts } from '$lib/accounts.svelte';
 	import { identity, getProfile } from '$lib/profiles.svelte';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
+	import Skeleton from '$lib/components/Skeleton.svelte';
 	import FollowButton from '$lib/components/follows/FollowButton.svelte';
 	import ShieldCheckIcon from 'phosphor-svelte/lib/ShieldCheckIcon';
 	import CalendarBlankIcon from 'phosphor-svelte/lib/CalendarBlankIcon';
@@ -41,7 +42,9 @@
 	};
 
 	type Field = keyof typeof FIELDS;
-	type Details = { [K in Field]: ReturnType<(typeof FIELDS)[K]> | undefined };
+	type Details = { [K in Field]: ReturnType<(typeof FIELDS)[K]> | undefined } & {
+		isPending: boolean;
+	};
 
 	const names = Object.keys(FIELDS) as Field[];
 
@@ -53,12 +56,15 @@
 			staleTime: 30_000
 		})),
 		combine: (results) =>
-			Object.fromEntries(
-				names.map((field, i) => {
-					const value = results[i].data?.value;
-					return [field, value === undefined ? undefined : FIELDS[field](value)];
-				})
-			) as Details
+			({
+				...Object.fromEntries(
+					names.map((field, i) => {
+						const value = results[i].data?.value;
+						return [field, value === undefined ? undefined : FIELDS[field](value)];
+					})
+				),
+				isPending: results.some((r) => r.isPending)
+			}) as Details
 	}));
 
 	const joined = $derived(
@@ -84,14 +90,20 @@
 
 		<p class="meta text-sm">
 			<span class="id">@{info.id}</span>
-			{#if details.title}
+			{#if details.isPending}
+				<span class="sep" aria-hidden="true">&middot;</span>
+				<Skeleton text width="7ch" />
+			{:else if details.title}
 				<span class="sep" aria-hidden="true">&middot;</span>
 				<span class="title">{details.title}</span>
 			{/if}
 		</p>
 
 		<p class="social stats text-sm">
-			{#if isSelf}
+			{#if subs === undefined}
+				<Skeleton text width="6rem" />
+				<Skeleton text width="6rem" />
+			{:else if isSelf}
 				<a href="/follows?tab=followers">
 					<strong>{compactNumber(subs?.in ?? 0)}</strong> followers
 				</a>
@@ -105,20 +117,32 @@
 		</p>
 	</div>
 
-	{#if details.blurb}
+	{#if details.isPending}
+		<div class="blurb">
+			<Skeleton text lines={2} />
+		</div>
+	{:else if details.blurb}
 		<div class="blurb">
 			<Ucp text={details.blurb} context="PROFILE" />
 		</div>
 	{/if}
 
 	<p class="counts stats text-sm">
-		<span><strong>{compactNumber(details.answers ?? 0)}</strong> answers</span>
-		<span><strong>{compactNumber(details.questions ?? 0)}</strong> questions</span>
-		<span><strong>{compactNumber(details.forumPosts ?? 0)}</strong> posts</span>
+		{#if details.isPending}
+			<Skeleton text width="5.5rem" />
+			<Skeleton text width="6rem" />
+			<Skeleton text width="4.5rem" />
+		{:else}
+			<span><strong>{compactNumber(details.answers ?? 0)}</strong> answers</span>
+			<span><strong>{compactNumber(details.questions ?? 0)}</strong> questions</span>
+			<span><strong>{compactNumber(details.forumPosts ?? 0)}</strong> posts</span>
+		{/if}
 	</p>
 
 		<p class="dates text-sm">
-			{#if joined && details.joinTime !== undefined}
+			{#if details.isPending}
+				<Skeleton text width="9rem" />
+			{:else if joined && details.joinTime !== undefined}
 				<span class="date" class:cake={joined.isToday}>
 					{#if joined.isToday}
 						<CakeIcon weight="fill" />
@@ -149,8 +173,9 @@
 			{#if !isSelf}
 				<!-- until it loads we don't know which way round the button goes -->
 				{#if following !== null}
-					<!-- i think we should lowk put a placeholder button -->
 					<FollowButton {userId} {following} />
+				{:else}
+					<Skeleton class="btn-placeholder" height="2rem" width="5.5rem" />
 				{/if}
 				<!-- TODO: messages.startConversation(title, body, [userId]) -->
 				<button class="btn btn-sm btn-secondary text-sm" disabled>Message</button>
@@ -288,7 +313,8 @@
 	}
 
 	@media (--mobile) {
-		.actions :global(.btn) {
+		.actions :global(.btn),
+		.actions :global(.btn-placeholder) {
 			flex: 1;
 		}
 	}
