@@ -109,7 +109,12 @@
 
 @media (width < 640px) {
 	:root {
-		--text-body: var(--text-lg);
+	--text-xs: 12px;
+	--text-sm: 14px;
+	--text-md: 15px;
+	--text-lg: 16px;
+	--text-xl: 18px;
+		/*--text-body: var(--text-lg);*/
 	}
 }
 
@@ -466,7 +471,7 @@ button,
 
 body {
 	font-family: var(--font-ui);
-	font-size: 14px;
+	font-size: var(--text-body);
 	line-height: 1.5;
 	color: var(--color-text);
 	background: var(--color-bg-page);

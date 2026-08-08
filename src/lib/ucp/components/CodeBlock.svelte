@@ -37,7 +37,7 @@
 		width: 100%;
 		padding: var(--space-1) var(--space-padding-sm);
 		font-family: var(--font-mono);
-		font-size: 0.8em;
+		font-size: var(--text-xs);
 		color: var(--color-text-secondary);
 		background: var(--color-surface);
 		border: none;
@@ -64,7 +64,7 @@
 		margin: 0;
 		padding: var(--space-padding-sm);
 		font-family: var(--font-mono);
-		font-size: 0.9em;
+		font-size: var(--text-sm);
 		line-height: 1.5;
 		color: var(--color-text);
 		overflow-x: auto;

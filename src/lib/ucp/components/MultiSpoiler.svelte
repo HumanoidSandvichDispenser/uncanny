@@ -42,7 +42,6 @@
 		align-items: center;
 		gap: var(--space-2);
 		padding: 0;
-		font-size: 0.85em;
 		font-family: inherit;
 		color: var(--color-text-secondary);
 		background: none;

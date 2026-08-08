@@ -11,7 +11,7 @@
 	.heading {
 		margin: 0;
 		font-weight: 600;
-		font-size: 1.15em;
+		font-size: var(--text-xl);
 		color: var(--color-text);
 	}
 </style>

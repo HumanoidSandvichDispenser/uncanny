@@ -197,6 +197,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-1);
+		font-size: var(--text-xl);
 	}
 
 	.drawer-link,

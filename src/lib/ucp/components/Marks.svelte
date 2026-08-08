@@ -109,7 +109,7 @@
 	.code {
 		padding: 0.1em 0.35em;
 		font-family: var(--font-mono);
-		font-size: 0.9em;
+		font-size: var(--text-sm);
 		background: var(--color-code-bg);
 		border: var(--border-thin) solid var(--color-border);
 		border-radius: var(--radius-sm);

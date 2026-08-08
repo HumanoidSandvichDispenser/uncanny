@@ -108,7 +108,7 @@
 	kbd {
 		padding: 1px var(--space-2);
 		font-family: var(--font-mono, monospace);
-		font-size: 0.85em;
+		font-size: var(--text-sm);
 		background: var(--color-bg-card);
 		border: var(--border-thin) solid var(--color-border);
 		border-radius: var(--radius-sm);

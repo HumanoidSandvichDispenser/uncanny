@@ -111,6 +111,10 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+
+		@media (--mobile) {
+			font-size: var(--text-xl);
+		}
 	}
 
 	.replies {
