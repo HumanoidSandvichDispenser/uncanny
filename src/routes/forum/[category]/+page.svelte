@@ -3,7 +3,9 @@
 	import { createInfiniteQuery } from '@tanstack/svelte-query';
 	import { accounts } from '$lib/accounts.svelte';
 	import ThreadCard from '$lib/components/forum/ThreadCard.svelte';
+	import ThreadCardSkeleton from '$lib/components/forum/ThreadCardSkeleton.svelte';
 	import PageNav from '$lib/components/PageNav.svelte';
+	import Skeleton from '$lib/components/Skeleton.svelte';
 
 	const category = $derived(page.params.category!);
 
@@ -19,9 +21,10 @@
 		enabled: accounts.isAuthed
 	}));
 
-	// header info comes from the first page
+	// header info comes from the first page; null until it lands, so the header
+	// shows a skeleton rather than the raw slug
 	const first = $derived(threads.data?.pages[0]);
-	const title = $derived(first?.name || category);
+	const title = $derived(first ? first.name || category : null);
 </script>
 
 <PageNav {title} />
@@ -29,14 +32,21 @@
 <main class="page">
 	<header class="head">
 		<a class="text-sm crumb" href="/forum">Forum</a>
-		<h1>{title}</h1>
 		{#if first}
+			<h1>{title}</h1>
 			<span class="text-sm sub">{first.totalThreads} threads</span>
+		{:else}
+			<h1><Skeleton text width="9rem" /></h1>
+			<span class="text-sm sub"><Skeleton text width="5rem" /></span>
 		{/if}
 	</header>
 
 	{#if threads.isPending}
-		<p class="text-sm sub">Loading threads&hellip;</p>
+		<ul class="list">
+			{#each { length: 6 }, i (i)}
+				<li><ThreadCardSkeleton /></li>
+			{/each}
+		</ul>
 	{:else if threads.isError}
 		<p class="text-sm error">{threads.error.message}</p>
 	{:else}

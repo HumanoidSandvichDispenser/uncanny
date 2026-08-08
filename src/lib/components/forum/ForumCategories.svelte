@@ -3,6 +3,7 @@
 	import { accounts } from '$lib/accounts.svelte';
 	import { batched } from '$lib/batch';
 	import CategoryCard from '$lib/components/forum/CategoryCard.svelte';
+	import CategoryCardSkeleton from '$lib/components/forum/CategoryCardSkeleton.svelte';
 
 	const categories = createQuery(() => ({
 		queryKey: ['forum', 'categories', accounts.activeId],
@@ -17,7 +18,11 @@
 </script>
 
 {#if categories.isPending}
-	<p class="text-sm sub">Loading categories&hellip;</p>
+	<ul class="list-card">
+		{#each { length: 6 }, i (i)}
+			<li><CategoryCardSkeleton /></li>
+		{/each}
+	</ul>
 {:else if categories.isError}
 	<p class="text-sm error">{categories.error.message}</p>
 {:else if categories.isSuccess}
@@ -31,10 +36,6 @@
 {/if}
 
 <style>
-	.sub {
-		color: var(--color-text-secondary);
-	}
-
 	.error {
 		color: var(--color-error);
 	}

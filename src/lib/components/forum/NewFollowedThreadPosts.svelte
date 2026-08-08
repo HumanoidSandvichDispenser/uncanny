@@ -5,6 +5,7 @@
 	import { queryError } from '$lib/query';
 	import ArrowRightIcon from 'phosphor-svelte/lib/ArrowRightIcon';
 	import PostSummaryCard from '$lib/components/forum/PostSummaryCard.svelte';
+	import PostSummaryCardSkeleton from '$lib/components/forum/PostSummaryCardSkeleton.svelte';
 
 	const followed = createQuery(() => ({
 		queryKey: ['forum', 'threads', 'followed', accounts.activeId],
@@ -29,7 +30,11 @@
 	</div>
 
 	{#if followed.isPending}
-		<p class="empty-msg text-sm">Loading followed threads&hellip;</p>
+		<ul class="list-card">
+			{#each { length: 3 }, i (i)}
+				<li><PostSummaryCardSkeleton /></li>
+			{/each}
+		</ul>
 	{:else if error}
 		<p class="empty-msg text-sm error">{error}</p>
 	{:else if followed.isSuccess}

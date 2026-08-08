@@ -2,7 +2,9 @@
 	let {
 		width,
 		height,
+		size,
 		radius,
+		circle = false,
 		text = false,
 		lines = 1,
 		last = '60%',
@@ -15,8 +17,14 @@
 		/** Any CSS length. Ignored when `text` is set. */
 		height?: string;
 
+		/** Sets width and height at once, for squares and avatars. */
+		size?: string;
+
 		/** Overrides the shape's corner radius. */
 		radius?: string;
+
+		/** Fully rounds the shape, for avatar placeholders. */
+		circle?: boolean;
 
 		/** Size to the current font instead of a fixed height. */
 		text?: boolean;
@@ -33,8 +41,8 @@
 
 	const vars = $derived(
 		[
-			width !== undefined && `--skeleton-width: ${width}`,
-			height !== undefined && `--skeleton-height: ${height}`,
+			(width ?? size) !== undefined && `--skeleton-width: ${width ?? size}`,
+			(height ?? size) !== undefined && `--skeleton-height: ${height ?? size}`,
 			radius !== undefined && `--skeleton-radius: ${radius}`,
 			style
 		]
@@ -51,7 +59,8 @@
 		{/each}
 	</span>
 {:else}
-	<span class="skeleton {className ?? ''}" class:text style={vars} aria-hidden="true"></span>
+	<span class="skeleton {className ?? ''}" class:text class:circle style={vars} aria-hidden="true"
+	></span>
 {/if}
 
 <style>
@@ -70,6 +79,11 @@
 		--skeleton-radius: var(--radius-sm);
 		height: var(--skeleton-height, 0.8em);
 		margin: calc((1lh - 0.8em) / 2) 0;
+	}
+
+	.skeleton.circle {
+		flex: none;
+		border-radius: var(--skeleton-radius, var(--radius-full));
 	}
 
 	.lines {

@@ -8,6 +8,8 @@
 	import PageNav from '$lib/components/PageNav.svelte';
 	import { observeVisible } from '$lib/actions/observeVisible';
 	import PostCard from '$lib/components/forum/PostCard.svelte';
+	import PostCardSkeleton from '$lib/components/forum/PostCardSkeleton.svelte';
+	import Skeleton from '$lib/components/Skeleton.svelte';
 	import { transitionSettled } from '$lib/transition';
 
 	const category = $derived(page.params.category!);
@@ -93,7 +95,7 @@
 	const total = $derived(before + posts.length + after);
 
 	const meta = $derived(pages.find((p) => p.thread)?.thread);
-	const title = $derived(meta?.title ?? 'Thread');
+	const title = $derived(meta?.title ?? null);
 
 	let pendingScroll = $state<'top' | 'bottom' | 'unread' | null>(null);
 
@@ -167,9 +169,13 @@
 
 		<div class="head-inner">
 			<div class="titlebar">
-				<h1>{title}</h1>
-				{#if meta?.locked}
-					<span class="text-xs sub">Locked</span>
+				{#if title === null}
+					<h1 class="loading"><Skeleton text width="60%" /></h1>
+				{:else}
+					<h1>{title}</h1>
+					{#if meta?.locked}
+						<span class="text-xs sub">Locked</span>
+					{/if}
 				{/if}
 			</div>
 			<div class="nav">{@render controls()}</div>
@@ -177,7 +183,11 @@
 	</header>
 
 	{#if view.isPending}
-		<p class="text-sm sub">Loading thread&hellip;</p>
+		<div class="posts">
+			{#each { length: 5 }, i (i)}
+				<PostCardSkeleton lines={2 + (i % 3)} />
+			{/each}
+		</div>
 	{:else if view.isError}
 		<p class="text-sm error">{view.error.message}</p>
 	{:else}
@@ -275,6 +285,11 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	/* shrink-to-fit would collapse the percentage-width bar to nothing */
+	.titlebar h1.loading {
+		flex: 1;
 	}
 
 	.nav {

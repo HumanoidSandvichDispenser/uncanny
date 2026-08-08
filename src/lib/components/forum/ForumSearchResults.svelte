@@ -3,6 +3,7 @@
 	import { accounts } from '$lib/accounts.svelte';
 	import { queryError } from '$lib/query';
 	import PostSummaryCard from '$lib/components/forum/PostSummaryCard.svelte';
+	import PostSummaryCardSkeleton from '$lib/components/forum/PostSummaryCardSkeleton.svelte';
 
 	let { term }: { term: string } = $props();
 
@@ -27,7 +28,11 @@
 </div>
 
 {#if search.isPending}
-	<p class="text-sm sub">Searching&hellip;</p>
+	<ul class="list-card">
+		{#each { length: 5 }, i (i)}
+			<li><PostSummaryCardSkeleton /></li>
+		{/each}
+	</ul>
 {:else if error}
 	<p class="text-sm error">{error}</p>
 {:else if search.isSuccess}

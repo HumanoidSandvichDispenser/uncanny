@@ -75,7 +75,6 @@
 		return `rgb(${color.r}, ${color.g}, ${color.b})`;
 	}
 
-	/** Background colors arrive as raw `[r, g, b]` tuples, unlike normalized text colors. */
 	function go(delta: number) {
 		const target = items[currentPos + delta];
 
