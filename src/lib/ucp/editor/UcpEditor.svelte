@@ -8,7 +8,18 @@
 	import { fromPM } from './bridge';
 	import { generate } from '../generate';
 
-	let { value = $bindable('') }: { value?: string } = $props();
+	let {
+		value = $bindable(''),
+		disabled = false,
+		placeholder = '',
+		onSubmit
+	}: {
+		value?: string;
+		disabled?: boolean;
+		placeholder?: string;
+		/** Mod-Enter handler */
+		onSubmit?: () => void;
+	} = $props();
 
 	let host: HTMLElement;
 	let view: EditorView | undefined;
@@ -20,7 +31,10 @@
 
 		view.updateState(EditorState.create({ schema, plugins }));
 		value = '';
-		view.focus();
+	}
+
+	export function focus() {
+		view?.focus();
 	}
 
 	const plugins = [
@@ -31,7 +45,15 @@
 			'Mod-y': redo,
 			'Mod-b': toggleMark(schema.marks.bold),
 			'Mod-i': toggleMark(schema.marks.italic),
-			'Mod-u': toggleMark(schema.marks.underline)
+			'Mod-u': toggleMark(schema.marks.underline),
+			'Mod-Enter': () => {
+				if (onSubmit === undefined) {
+					return false;
+				}
+
+				onSubmit();
+				return true;
+			}
 		}),
 		keymap(baseKeymap)
 	];
@@ -52,8 +74,21 @@
 
 		view = v;
 
-		return () => v.destroy();
+		return () => {
+			view = undefined;
+			v.destroy();
+		};
+	});
+
+	$effect(() => {
+		view?.setProps({ editable: () => !disabled });
 	});
 </script>
 
-<div class="ucp-editor" bind:this={host}></div>
+<div
+	class="ucp-editor"
+	class:disabled
+	class:empty={value === ''}
+	data-placeholder={placeholder}
+	bind:this={host}
+></div>

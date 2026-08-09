@@ -3,14 +3,28 @@
  */
 
 .ucp-editor {
+	position: relative;
 	border: var(--border-thin) solid var(--color-border);
 	border-radius: var(--radius-md);
 	background: var(--color-surface);
 }
 
+.ucp-editor.disabled {
+	opacity: 0.6;
+}
+
+.ucp-editor.empty::before {
+	content: attr(data-placeholder);
+	position: absolute;
+	top: var(--space-padding-sm);
+	left: var(--space-padding-sm);
+	color: var(--color-text-tertiary);
+	pointer-events: none;
+}
+
 .ucp-editor .ProseMirror {
 	min-height: 6rem;
-	padding: var(--space-padding-md);
+	padding: var(--space-padding-sm);
 	outline: none;
 	color: var(--color-text);
 	overflow-wrap: anywhere;

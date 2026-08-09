@@ -4,6 +4,7 @@
 	import { displayName } from '$lib/profiles.svelte';
 	import { AnswerQueue, pollTotal } from '$lib/answer.svelte';
 	import Ucp from '$lib/ucp/components/Ucp.svelte';
+	import UcpEditor from '$lib/ucp/editor/UcpEditor.svelte';
 	import PaperPlaneRightIcon from 'phosphor-svelte/lib/PaperPlaneRightIcon';
 	import SkipForwardIcon from 'phosphor-svelte/lib/SkipForwardIcon';
 	import ArrowClockwiseIcon from 'phosphor-svelte/lib/ArrowClockwiseIcon';
@@ -18,12 +19,19 @@
 	const question = $derived(queue.question);
 	const total = $derived(question ? pollTotal(question) : 0);
 
-	function onKeydown(e: KeyboardEvent) {
-		if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-			e.preventDefault();
-			queue.submitReply();
+	let editor = $state<UcpEditor>();
+
+	// a new question gets a fresh editor (and fresh undo history)
+	let lastQuestionId: number | null = null;
+	$effect(() => {
+		const id = queue.question?.id ?? null;
+		if (id === lastQuestionId) {
+			return;
 		}
-	}
+
+		lastQuestionId = id;
+		editor?.clear();
+	});
 </script>
 
 <section class="answer">
@@ -82,20 +90,25 @@
 			</ul>
 		{/if}
 
-		<textarea
-			class="ta"
-			placeholder="Write your answer&hellip;"
+		<UcpEditor
 			bind:value={queue.reply}
-			onkeydown={onKeydown}
+			bind:this={editor}
+			placeholder="Write your answer&hellip;"
 			disabled={queue.busy}
-		></textarea>
+			onSubmit={() => queue.submitReply()}
+		/>
 
 		{#if queue.error}
 			<p class="err text-sm">{queue.error}</p>
 		{/if}
 
 		<div class="actions">
-			<button type="button" class="ghost label-sm" onclick={() => queue.skip()} disabled={queue.busy}>
+			<button
+				type="button"
+				class="ghost label-sm"
+				onclick={() => queue.snooze()}
+				disabled={queue.busy}
+			>
 				<SkipForwardIcon size={15} />
 				Skip
 			</button>
@@ -164,25 +177,6 @@
 	.qtext {
 		font-family: var(--font-serif);
 		font-size: var(--text-lg);
-	}
-
-	.ta {
-		width: 100%;
-		min-height: 5rem;
-		padding: var(--space-3);
-		font-family: var(--font-ui);
-		font-size: var(--text-sm);
-		color: var(--color-text);
-		background: var(--color-surface);
-		border: var(--border-thin) solid var(--color-border);
-		border-radius: var(--radius-md);
-		resize: vertical;
-	}
-
-	.ta:focus-visible {
-		outline: 2px solid var(--color-primary);
-		outline-offset: -1px;
-		border-color: var(--color-primary);
 	}
 
 	.actions {

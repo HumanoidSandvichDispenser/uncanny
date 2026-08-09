@@ -20,13 +20,27 @@
 
 		onSuccess: () => {
 			editor.clear();
+			editor.focus();
 			void client.invalidateQueries({ queryKey: ['forum', 'thread', threadId] });
 		}
 	}));
+
+	function submit() {
+		if (value.trim() === '' || reply.isPending) {
+			return;
+		}
+		reply.mutate(value);
+	}
 </script>
 
 <div class="reply-box">
-	<UcpEditor bind:value bind:this={editor} />
+	<UcpEditor
+		bind:value
+		bind:this={editor}
+		placeholder="Write a reply&hellip;"
+		disabled={reply.isPending}
+		onSubmit={submit}
+	/>
 	<div class="actions">
 		{#if reply.isError}
 			<span class="text-sm error">{reply.error.message}</span>
@@ -34,7 +48,7 @@
 		<button
 			class="btn btn-primary"
 			disabled={value.trim() === '' || reply.isPending}
-			onclick={() => reply.mutate(value)}
+			onclick={submit}
 		>
 			{reply.isPending ? 'Posting…' : 'Reply'}
 		</button>
