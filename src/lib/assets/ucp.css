@@ -1,0 +1,36 @@
+/**
+ * Styles for the UCP editor's content.
+ */
+
+.ucp-editor {
+	border: var(--border-thin) solid var(--color-border);
+	border-radius: var(--radius-md);
+	background: var(--color-surface);
+}
+
+.ucp-editor .ProseMirror {
+	min-height: 6rem;
+	padding: var(--space-padding-md);
+	outline: none;
+	color: var(--color-text);
+	overflow-wrap: anywhere;
+}
+
+.ucp-editor .ProseMirror p {
+	margin: 0;
+}
+
+.ucp-editor code.code {
+	padding: 0.1em 0.35em;
+	font-family: var(--font-mono);
+	font-size: var(--text-sm);
+	background: var(--color-code-bg);
+	border: var(--border-thin) solid var(--color-border);
+	border-radius: var(--radius-sm);
+}
+
+.ucp-editor .spoiler {
+	background: var(--color-surface-active);
+	border-bottom: var(--border-thin) dashed var(--color-text-tertiary);
+	border-radius: var(--radius-sm);
+}

@@ -8,6 +8,7 @@
 	import PageNav from '$lib/components/PageNav.svelte';
 	import { observeVisible } from '$lib/actions/observeVisible';
 	import PostCard from '$lib/components/forum/PostCard.svelte';
+	import ReplyBox from '$lib/components/forum/ReplyBox.svelte';
 	import PostCardSkeleton from '$lib/components/forum/PostCardSkeleton.svelte';
 	import Skeleton from '$lib/components/Skeleton.svelte';
 	import { transitionSettled } from '$lib/transition';
@@ -159,11 +160,7 @@
 
 <main class="page">
 	<header class="head" use:observeVisible={(visible) => (headerVisible = visible)}>
-		<a
-			class="text-sm crumb"
-			href="/forum/{category}"
-			data-nav="back"
-		>
+		<a class="text-sm crumb" href="/forum/{category}" data-nav="back">
 			{category}
 		</a>
 
@@ -220,6 +217,10 @@
 				</button>
 			{/if}
 		</div>
+
+		{#if accounts.isAuthed && !meta?.locked}
+			<ReplyBox {threadId} />
+		{/if}
 	{/if}
 </main>
 
