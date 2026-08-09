@@ -47,6 +47,12 @@
 		"@sandvichxyz/pecans": "1.1.8",
 		"@tanstack/svelte-query": "^6.1.38",
 		"bits-ui": "^2.18.1",
-		"idb-keyval": "^6.3.0"
+		"idb-keyval": "^6.3.0",
+		"prosemirror-commands": "^1.7.2",
+		"prosemirror-history": "^1.5.0",
+		"prosemirror-keymap": "^1.2.3",
+		"prosemirror-model": "^1.25.11",
+		"prosemirror-state": "^1.4.4",
+		"prosemirror-view": "^1.42.2"
 	}
 }
