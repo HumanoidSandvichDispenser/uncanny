@@ -9,11 +9,11 @@
 	import TextStrikethroughIcon from 'phosphor-svelte/lib/TextStrikethroughIcon';
 	import CodeIcon from 'phosphor-svelte/lib/CodeIcon';
 	import EyeSlashIcon from 'phosphor-svelte/lib/EyeSlashIcon';
-	import { schema } from './schema';
+	import { schemaFor } from './schema';
 	import { fromPM } from './bridge';
 	import { generate } from '../generate';
 	import { isMarkActive, markCommand, ucpPlugins } from './commands';
-	import type { MarkType } from '../ast';
+	import type { MarkType, UcpContext } from '../ast';
 
 	/**
 	 * Minimal UCP editor. `value` is out-only: it receives canonical UCP on
@@ -22,16 +22,20 @@
 	 */
 	let {
 		value = $bindable(''),
+		context = 'FORUM',
 		disabled = false,
 		placeholder = '',
 		onSubmit
 	}: {
 		value?: string;
+		context?: UcpContext;
 		disabled?: boolean;
 		placeholder?: string;
 		/** Mod-Enter handler, for submit-on-shortcut forms. */
 		onSubmit?: () => void;
 	} = $props();
+
+	const editorSchema = $derived(schemaFor(context));
 
 	type Tool = { name: MarkType; label: string; icon: Component };
 
@@ -52,7 +56,7 @@
 		if (view === undefined) {
 			return;
 		}
-		view.updateState(EditorState.create({ schema, plugins: ucpPlugins(schema) }));
+		view.updateState(EditorState.create({ schema: editorSchema, plugins: ucpPlugins(editorSchema) }));
 		editorState = view.state;
 		value = '';
 	}
@@ -68,7 +72,7 @@
 			return false;
 		}
 
-		return isMarkActive(state, schema, tool.name);
+		return isMarkActive(state, editorSchema, tool.name);
 	}
 
 	function run(tool: Tool) {
@@ -78,7 +82,7 @@
 			return;
 		}
 
-		const command = markCommand(schema, tool.name);
+		const command = markCommand(editorSchema, tool.name);
 
 		if (command === null) {
 			return;
@@ -94,8 +98,8 @@
 
 		const v = new EditorView(el, {
 			state: EditorState.create({
-				schema,
-				plugins: ucpPlugins(schema, { onSubmit: submit })
+				schema: editorSchema,
+				plugins: ucpPlugins(editorSchema, { onSubmit: submit })
 			}),
 			dispatchTransaction(tr) {
 				const state = v.state.apply(tr);

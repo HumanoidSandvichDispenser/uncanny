@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { schema } from './schema';
+import { schemaFor } from './schema';
 import { fromPM } from './bridge';
 import { parse } from '../parse';
 import { generate } from '../generate';
 import type { Inline, MarkType } from '../ast';
+
+const schema = schemaFor('FORUM');
 
 /** [text, ...markNames] */
 type Run = [string, ...MarkType[]];

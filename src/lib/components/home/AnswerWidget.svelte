@@ -93,6 +93,7 @@
 		<UcpEditor
 			bind:value={queue.reply}
 			bind:this={editor}
+			context="QA_ANSWER"
 			placeholder="Write your answer&hellip;"
 			disabled={queue.busy}
 			onSubmit={() => queue.submitReply()}

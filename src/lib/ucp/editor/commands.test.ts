@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { EditorState, TextSelection } from 'prosemirror-state';
-import { schema } from './schema';
+import { schemaFor } from './schema';
 import { isMarkActive, markCommand, ucpPlugins } from './commands';
+
+const schema = schemaFor('FORUM');
 
 function state(text: string) {
 	return EditorState.create({
