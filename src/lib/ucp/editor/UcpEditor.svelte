@@ -9,11 +9,13 @@
 	import TextStrikethroughIcon from 'phosphor-svelte/lib/TextStrikethroughIcon';
 	import CodeIcon from 'phosphor-svelte/lib/CodeIcon';
 	import EyeSlashIcon from 'phosphor-svelte/lib/EyeSlashIcon';
+	import TextHOneIcon from 'phosphor-svelte/lib/TextHOneIcon';
+	import ListBulletsIcon from 'phosphor-svelte/lib/ListBulletsIcon';
 	import { schemaFor } from './schema';
 	import { fromPM } from './bridge';
 	import { generate } from '../generate';
-	import { isMarkActive, markCommand, ucpPlugins } from './commands';
-	import type { MarkType, UcpContext } from '../ast';
+	import { blockCommand, isBlockActive, isMarkActive, markCommand, ucpPlugins } from './commands';
+	import type { UcpContext } from '../ast';
 
 	/**
 	 * Minimal UCP editor. `value` is out-only: it receives canonical UCP on
@@ -37,26 +39,52 @@
 
 	const editorSchema = $derived(schemaFor(context));
 
-	type Tool = { name: MarkType; label: string; icon: Component };
+	type Tool = { name: string; kind: 'mark' | 'block'; label: string; icon: Component };
 
 	const TOOLS: Tool[] = [
-		{ name: 'bold', label: 'Bold', icon: TextBIcon },
-		{ name: 'italic', label: 'Italic', icon: TextItalicIcon },
-		{ name: 'underline', label: 'Underline', icon: TextUnderlineIcon },
-		{ name: 'strike', label: 'Strikethrough', icon: TextStrikethroughIcon },
-		{ name: 'code', label: 'Code', icon: CodeIcon },
-		{ name: 'spoiler', label: 'Spoiler', icon: EyeSlashIcon }
+		{ name: 'bold', kind: 'mark', label: 'Bold', icon: TextBIcon },
+		{ name: 'italic', kind: 'mark', label: 'Italic', icon: TextItalicIcon },
+		{ name: 'underline', kind: 'mark', label: 'Underline', icon: TextUnderlineIcon },
+		{ name: 'strike', kind: 'mark', label: 'Strikethrough', icon: TextStrikethroughIcon },
+		{ name: 'code', kind: 'mark', label: 'Code', icon: CodeIcon },
+		{ name: 'spoiler', kind: 'mark', label: 'Spoiler', icon: EyeSlashIcon },
+		{ name: 'heading', kind: 'block', label: 'Heading', icon: TextHOneIcon },
+		{ name: 'list', kind: 'block', label: 'Bullet list', icon: ListBulletsIcon }
 	];
+
+	const tools = $derived(
+		TOOLS.filter((tool) => {
+			if (tool.kind === 'mark') {
+				return editorSchema.marks[tool.name] !== undefined;
+			} else if (tool.kind === 'block') {
+				return editorSchema.nodes[tool.name] !== undefined;
+			}
+
+			throw new Error(`Unknown kind: ${tool.kind}`);
+		})
+	);
 
 	let host: HTMLElement;
 	let view: EditorView | undefined;
 	let editorState = $state<EditorState>();
 
+	const isEmpty = $derived.by(() => {
+		if (editorState === undefined) {
+			return value === '';
+		}
+
+		return editorState.doc.childCount === 1 &&
+			editorState.doc.child(0).type.name === 'paragraph' &&
+			editorState.doc.child(0).content.size === 0;
+	});
+
 	export function clear() {
 		if (view === undefined) {
 			return;
 		}
-		view.updateState(EditorState.create({ schema: editorSchema, plugins: ucpPlugins(editorSchema) }));
+		view.updateState(
+			EditorState.create({ schema: editorSchema, plugins: ucpPlugins(editorSchema) })
+		);
 		editorState = view.state;
 		value = '';
 	}
@@ -72,7 +100,9 @@
 			return false;
 		}
 
-		return isMarkActive(state, editorSchema, tool.name);
+		return tool.kind === 'mark'
+			? isMarkActive(state, editorSchema, tool.name)
+			: isBlockActive(state, tool.name);
 	}
 
 	function run(tool: Tool) {
@@ -82,7 +112,10 @@
 			return;
 		}
 
-		const command = markCommand(editorSchema, tool.name);
+		const command =
+			tool.kind === 'mark'
+				? markCommand(editorSchema, tool.name)
+				: blockCommand(editorSchema, tool.name);
 
 		if (command === null) {
 			return;
@@ -127,7 +160,7 @@
 
 <div class="ucp-editor" class:disabled>
 	<div class="toolbar">
-		{#each TOOLS as tool (tool.name)}
+		{#each tools as tool (tool.name)}
 			<button
 				type="button"
 				class="btn btn-icon tool"
@@ -145,7 +178,7 @@
 	</div>
 	<div
 		class="surface"
-		class:empty={value === ''}
+		class:empty={isEmpty}
 		data-placeholder={placeholder}
 		bind:this={host}
 	></div>

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { EditorState, TextSelection } from 'prosemirror-state';
 import { schemaFor } from './schema';
-import { isMarkActive, markCommand, ucpPlugins } from './commands';
+import { isBlockActive, isMarkActive, markCommand, blockCommand, ucpPlugins } from './commands';
 
 const schema = schemaFor('FORUM');
 
@@ -13,6 +13,19 @@ function state(text: string) {
 			type: 'doc',
 			content: [{ type: 'paragraph', content: [{ type: 'text', text }] }]
 		})
+	});
+}
+
+const para = (text: string) => ({ type: 'paragraph', content: [{ type: 'text', text }] });
+const heading = (text: string) => ({ type: 'heading', content: [{ type: 'text', text }] });
+const listItem = (...blocks: object[]) => ({ type: 'listItem', content: blocks });
+const list = (...items: object[]) => ({ type: 'list', content: items });
+
+function blockState(content: object[]) {
+	return EditorState.create({
+		schema,
+		plugins: ucpPlugins(schema),
+		doc: schema.nodeFromJSON({ type: 'doc', content })
 	});
 }
 
@@ -51,6 +64,75 @@ describe('isMarkActive', () => {
 		const stored = s.apply(s.tr.setStoredMarks([schema.marks.bold.create()]));
 
 		expect(isMarkActive(stored, schema, 'bold')).toBe(true);
+	});
+});
+
+	describe('isBlockActive', () => {
+	it('is false at top level and true inside a heading', () => {
+		const s = select(blockState([heading('title')]), 3);
+
+		expect(isBlockActive(s, 'heading')).toBe(true);
+		expect(isBlockActive(s, 'paragraph')).toBe(false);
+	});
+
+	it('is true at nested list depth', () => {
+		const s = select(blockState([list(listItem(para('a'), list(listItem(para('b')))))]), 4);
+
+		expect(isBlockActive(s, 'list')).toBe(true);
+		expect(isBlockActive(s, 'listItem')).toBe(true);
+	});
+});
+
+describe('blockCommand', () => {
+	it('toggles a paragraph to a heading and back', () => {
+		const s = select(state('hello'), 1, 5);
+		let tr = s.tr;
+
+		blockCommand(schema, 'heading')!(s, (t) => (tr = t), undefined);
+		const headingState = s.apply(tr);
+
+		expect(headingState.doc.child(0).type.name).toBe('heading');
+
+		let tr2 = headingState.tr;
+		blockCommand(schema, 'heading')!(headingState, (t) => (tr2 = t), undefined);
+		const back = headingState.apply(tr2);
+
+		expect(back.doc.child(0).type.name).toBe('paragraph');
+	});
+
+	it('refuses a heading inside a list item', () => {
+		const s = select(blockState([list(listItem(para('a')))]), 2);
+		let dispatched = false;
+
+		const ok = blockCommand(schema, 'heading')!(s, () => (dispatched = true), undefined);
+
+		expect(ok).toBe(false);
+		expect(dispatched).toBe(false);
+	});
+
+	it('wraps a paragraph selection in a list', () => {
+		const s = select(state('hello'), 1, 5);
+		let tr = s.tr;
+
+		blockCommand(schema, 'list')!(s, (t) => (tr = t), undefined);
+		const out = s.apply(tr);
+
+		expect(out.doc.child(0).type.name).toBe('list');
+		expect(out.doc.child(0).child(0).type.name).toBe('listItem');
+	});
+
+	it('lifts an item out of an existing list', () => {
+		const s = select(blockState([list(listItem(para('a')))]), 2);
+		let tr = s.tr;
+
+		blockCommand(schema, 'list')!(s, (t) => (tr = t), undefined);
+		const out = s.apply(tr);
+
+		expect(out.doc.child(0).type.name).toBe('paragraph');
+	});
+
+	it('returns null for a block the schema lacks', () => {
+		expect(blockCommand(schema, 'nope')).toBeNull();
 	});
 });
 
