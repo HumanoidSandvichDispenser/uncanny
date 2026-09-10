@@ -103,9 +103,11 @@
 
 			transition.ready.catch(() => {});
 
-			const finished = transition.finished.catch(() => {}).finally(() => {
-				delete document.documentElement.dataset.nav;
-			});
+			const finished = transition.finished
+				.catch(() => {})
+				.finally(() => {
+					delete document.documentElement.dataset.nav;
+				});
 
 			setActiveTransition(finished);
 		});
@@ -114,7 +116,7 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 <QueryClientProvider client={queryClient}>
-	<div class="app">
+	<div class="app" class:full={page.route.id?.startsWith('/messages')}>
 		{#if accounts.isAuthed && pageNav.chrome === 'default'}
 			<Navbar />
 			<MobileNav />
@@ -136,6 +138,18 @@
 		display: flex;
 		flex-direction: column;
 		min-height: 100dvh;
+	}
+
+	/* Routes that lay out their own scrolling panes fill the viewport instead
+	   of letting the document scroll. */
+	:global(body:has(.app.full)) {
+		height: 100dvh;
+		overflow: hidden;
+	}
+
+	.app.full {
+		height: 100%;
+		min-height: 0;
 	}
 
 	.main {

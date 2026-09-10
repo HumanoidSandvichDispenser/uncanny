@@ -57,7 +57,7 @@
 </script>
 
 <span class="wrap">
-	{#if seed}
+	{#if seed && !isYouAnon}
 		<span
 			class="avatar anon"
 			class:square

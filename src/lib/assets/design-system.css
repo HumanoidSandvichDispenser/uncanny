@@ -504,6 +504,10 @@ textarea {
 	line-height: inherit;
 }
 
+time {
+	color: var(--color-text-secondary);
+}
+
 ::-webkit-scrollbar {
 	width: 6px;
 	height: 6px;

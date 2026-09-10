@@ -1,34 +1,39 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { identity } from '$lib/profiles.svelte';
-    import ShieldCheckIcon from 'phosphor-svelte/lib/ShieldCheckIcon';
+	import ShieldCheckIcon from 'phosphor-svelte/lib/ShieldCheckIcon';
 
 	let {
 		userId,
-        showAdmin = false,
-	}: { userId: string; showAdmin?: boolean } = $props();
+		showAdmin = false,
+		isAnonymous = false
+	}: { userId: string; showAdmin?: boolean; isAnonymous?: boolean } = $props();
 
-    let info = $derived(identity(userId));
+	let info = $derived(identity(userId));
 </script>
 
 <div class="username-label">
-    <a class="name label-md" href="/users/{userId}">
-        {info.name}
-    </a>
-    {#if showAdmin && info.isAdmin}
-        <ShieldCheckIcon />
-    {/if}
+	<a class="name label-md" href={resolve('/users/[id]', { id: userId })}>
+		{info.name}
+		{#if isAnonymous}
+			<span>(Anonymous)</span>
+		{/if}
+	</a>
+	{#if showAdmin && info.isAdmin}
+		<ShieldCheckIcon />
+	{/if}
 </div>
 
 <style>
-.username-label {
-    color: var(--color-text-secondary);
-    display: flex;
-    align-items: center;
-    gap: var(--space-gap-xs);
-}
+	.username-label {
+		color: var(--color-text-secondary);
+		display: flex;
+		align-items: center;
+		gap: var(--space-gap-xs);
+	}
 
-.username-label a {
-    color: var(--color-text-secondary);
-    font-weight: 600;
-}
+	.username-label a {
+		color: var(--color-text-secondary);
+		font-weight: 600;
+	}
 </style>

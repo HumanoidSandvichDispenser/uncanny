@@ -1,3 +1,5 @@
+import { getLocale } from '$lib/paraglide/runtime';
+
 /**
  * Format a Unix timestamp (seconds) as a short relative time, e.g. "3h", "2d".
  */
@@ -24,7 +26,8 @@ export function relativeTime(unixSeconds: number): string {
 
 	const date = new Date(unixSeconds * 1000);
 	const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
-	// Only show the year when it isn't the current one, to keep recent dates terse.
+
+	// only show the year when it isn't the current one
 	if (date.getFullYear() !== new Date().getFullYear()) {
 		options.year = 'numeric';
 	}
@@ -33,11 +36,63 @@ export function relativeTime(unixSeconds: number): string {
 }
 
 /**
+ * Format a Unix timestamp (seconds) as a localized clock time, e.g. "2:34 PM".
+ */
+export function clockTime(unixSeconds: number, locale: string = getLocale()): string {
+	return new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit' }).format(
+		unixSeconds * 1000
+	);
+}
+
+/**
+ * Format a Unix timestamp (seconds) as a localized conversation timestamp:
+ * time-only for today, a relative day label for yesterday, the weekday within
+ * the last week, otherwise a localized date. Times are client-local.
+ */
+export function messageDateTime(unixSeconds: number, locale: string = getLocale()): string {
+	const date = new Date(unixSeconds * 1000);
+	const now = new Date();
+	const time = clockTime(unixSeconds, locale);
+
+	const day = startOfDay(date);
+	const today = startOfDay(now);
+
+	if (day === today) {
+		return time;
+	}
+
+	const days = Math.round((today - day) / 86_400_000);
+
+	if (days === 1) {
+		const yesterday = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(-1, 'day');
+		return `${yesterday} ${time}`;
+	}
+
+	if (days > 1 && days < 7) {
+		const weekday = new Intl.DateTimeFormat(locale, { weekday: 'long' }).format(date);
+		return `${weekday} ${time}`;
+	}
+
+	const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+
+	// only show the year when it isn't the current one, to keep recent dates terse
+	if (date.getFullYear() !== now.getFullYear()) {
+		options.year = 'numeric';
+	}
+
+	return `${new Intl.DateTimeFormat(locale, options).format(date)} ${time}`;
+}
+
+function startOfDay(date: Date): number {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+}
+
+/**
  * Format a Unix timestamp (seconds) as a full date and time, e.g. "Mar 6,
  * 2021, 3:45 PM".
  */
-export function fullDateTime(unixSeconds: number): string {
-	return new Date(unixSeconds * 1000).toLocaleString(undefined, {
+export function fullDateTime(unixSeconds: number, locale: string = getLocale()): string {
+	return new Date(unixSeconds * 1000).toLocaleString(locale, {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
