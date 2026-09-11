@@ -3,108 +3,73 @@
 	import { resolve } from '$app/paths';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
 	import UsernameLabel from '$lib/components/UsernameLabel.svelte';
-	import { clockTime, fullDateTime, messageDateTime } from '$lib/format';
-	import { messageSender } from '$lib/messageGroups';
+	import { fullDateTime, messageDateTime } from '$lib/format';
+	import { messageSender } from '$lib/messageSender';
 	import Ucp from '$lib/ucp/components/Ucp.svelte';
 
 	let {
-		messages,
+		message,
 		members
 	}: {
-		messages: Message[];
+		message: Message;
 		members: Map<number, MessageThreadMember>;
 	} = $props();
 
-	const first = $derived(messages[0]);
-	const sender = $derived(messageSender(members.get(first.member), first.member));
+	const sender = $derived(messageSender(members.get(message.member), message.member));
+
+	// HACK:
+	const body = $derived((message as Message & { text: string }).text);
 </script>
 
-<article class="group">
-	{#each messages as message, i (message.id)}
-		<div id="message-{message.id}" class="row">
-			<div class="gutter">
-				{#if i === 0}
-					{#if sender.anon}
-						<UserAvatar name={sender.avatar} size={40} />
-					{:else}
-						<a href={resolve('/users/[id]', { id: sender.userId })}>
-							<UserAvatar name={sender.avatar} size={40} status />
-						</a>
-					{/if}
+<article id="message-{message.id}" class="message">
+	<div class="who">
+		{#if sender.anon}
+			<UserAvatar name={sender.avatar} size={40} />
+		{:else}
+			<a href={resolve('/users/[id]', { id: sender.userId })}>
+				<UserAvatar name={sender.avatar} size={40} status />
+			</a>
+		{/if}
+	</div>
+
+	<div class="body">
+		<header class="meta">
+			{#if sender.anon}
+				{#if sender.userId}
+					<UsernameLabel userId={sender.userId} isAnonymous showAdmin />
 				{:else}
-					<time
-						class="stamp text-xs"
-						datetime={new Date(message.time * 1000).toISOString()}
-						title={fullDateTime(message.time)}
-					>
-						{clockTime(message.time)}
-					</time>
+					<span class="name label-md">Anonymous</span>
 				{/if}
-			</div>
+			{:else}
+				<UsernameLabel userId={sender.userId} showAdmin />
+			{/if}
+			<time
+				class="text-xs date"
+				datetime={new Date(message.time * 1000).toISOString()}
+				title={fullDateTime(message.time)}
+			>
+				{messageDateTime(message.time)}
+			</time>
+		</header>
 
-			<div class="content">
-				{#if i === 0}
-					<header class="meta">
-						{#if sender.anon}
-							{#if sender.userId}
-								<UsernameLabel userId={sender.userId} isAnonymous showAdmin />
-							{:else}
-								<span class="name label-md">Anonymous</span>
-							{/if}
-						{:else}
-							<UsernameLabel userId={sender.userId} showAdmin />
-						{/if}
-						<span class="text-xs sub" title={fullDateTime(first.time)}>
-							{messageDateTime(first.time)}
-						</span>
-					</header>
-				{/if}
-
-				<div class="text">
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					<Ucp text={message.text} context="CHAT" />
-				</div>
-			</div>
+		<div class="text">
+			<Ucp text={body} context="CHAT" />
 		</div>
-	{/each}
+	</div>
 </article>
 
 <style>
-	.group {
+	.message {
 		display: flex;
-		flex-direction: column;
-		gap: var(--space-1);
+		gap: var(--space-gap-sm);
+		padding: var(--space-padding-md) var(--space-padding-sm);
 	}
 
-	.row {
-		display: flex;
-		padding: var(--space-padding-xs) var(--space-padding-sm);
-	}
-
-	@media (hover: hover) {
-		.row:hover {
-			background: var(--color-surface-hover);
-		}
-	}
-
-	.gutter {
+	.who {
 		flex: none;
-		width: var(--space-16);
-		display: flex;
-		justify-content: center;
 	}
 
-	.stamp {
-		visibility: hidden;
-		align-self: center;
-		color: var(--color-text-tertiary);
-	}
-
-	.row:hover .stamp {
-		visibility: visible;
-	}
-
-	.content {
+	.body {
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-2);
@@ -123,7 +88,7 @@
 		font-weight: 600;
 	}
 
-	.sub {
+	.date {
 		color: var(--color-text-secondary);
 	}
 

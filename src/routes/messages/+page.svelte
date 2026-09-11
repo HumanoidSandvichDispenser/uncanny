@@ -10,7 +10,15 @@
 
 <style>
 	.placeholder {
-		padding: var(--space-padding-xl);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-text-tertiary);
+		width: 100%;
+		height: 100%;
+	}
+
+	.placeholder p {
 		color: var(--color-text-tertiary);
 	}
 

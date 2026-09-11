@@ -5,10 +5,10 @@ import { batched } from './batch';
 /**
  * Query options for a page of the active account's inbox.
  */
-export function inboxQuery(page = 1) {
+export function inboxQuery(inbox: string, page = 1) {
 	return {
 		queryKey: ['messages', 'inbox', accounts.activeId, page],
-		queryFn: () => batched(accounts.active!.client.messages.folderView('inbox', page)),
+		queryFn: () => batched(accounts.active!.client.messages.folderView(inbox, page)),
 		enabled: accounts.isAuthed
 	};
 }

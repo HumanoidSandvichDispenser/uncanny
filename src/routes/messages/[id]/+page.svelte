@@ -2,12 +2,12 @@
 	import { page } from '$app/state';
 	import { createInfiniteQuery } from '@tanstack/svelte-query';
 	import { threadQuery } from '$lib/messages';
-	import { groupMessages } from '$lib/messageGroups';
 	import { observeVisible } from '$lib/actions/observeVisible';
 	import PageNav from '$lib/components/PageNav.svelte';
 	import MessageCard from '$lib/components/messages/MessageCard.svelte';
 	import MessageCardSkeleton from '$lib/components/messages/MessageCardSkeleton.svelte';
 	import UcpEditor from '$lib/ucp/editor/UcpEditor.svelte';
+	import MessageThreadHeader from '$lib/components/messages/MessageThreadHeader.svelte';
 
 	const id = $derived(page.params.id!);
 
@@ -32,7 +32,6 @@
 	// pages run newest first, and each page is newest first too, so flattening
 	// and reversing gives one chronological run
 	const ordered = $derived([...pages.flatMap((p) => p.messages)].reverse());
-	const groups = $derived(groupMessages(ordered));
 
 	let scrollerEl = $state<HTMLElement>();
 	let topEl = $state<HTMLElement>();
@@ -59,45 +58,54 @@
 
 <PageNav {title} />
 
-<main class="thread" bind:this={scrollerEl}>
-	{#if view.isPending}
-		<div class="skeletons">
-			<MessageCardSkeleton />
-			<MessageCardSkeleton grouped />
-			<MessageCardSkeleton />
-		</div>
-	{:else if groups.length === 0}
-		<p class="empty text-sm" class:error>{error ?? 'No messages yet.'}</p>
-	{:else}
-		<div class="message-editor">
-			<UcpEditor context="CHAT" />
-		</div>
+<div class="thread-page">
+	<main class="thread" bind:this={scrollerEl}>
+		{#if view.isPending}
+			<div class="skeletons">
+				<MessageCardSkeleton />
+				<MessageCardSkeleton />
+				<MessageCardSkeleton />
+			</div>
+		{:else if ordered.length === 0}
+			<p class="empty text-sm" class:error>{error ?? 'No messages yet.'}</p>
+		{:else}
+			<div class="messages">
+				{#each ordered as message (message.id)}
+					<MessageCard {message} {members} />
+				{/each}
+			</div>
 
-		<div class="messages">
-			{#each groups as group (group[0].id)}
-				<MessageCard messages={group} {members} />
-			{/each}
-		</div>
+			{#if error}
+				<p class="empty text-sm error">{error}</p>
+			{/if}
 
-		{#if error}
-			<p class="empty text-sm error">{error}</p>
+			{#if view.hasNextPage}
+				<button
+					class="btn btn-secondary load label-sm"
+					bind:this={topEl}
+					use:observeVisible={onTopVisible}
+					onclick={loadOlder}
+					disabled={view.isFetchingNextPage}
+				>
+					{view.isFetchingNextPage ? 'Loading more messages...' : 'Load earlier messages'}
+				</button>
+			{:else if header}
+				<MessageThreadHeader header={header} />
+			{/if}
 		{/if}
-
-		{#if view.hasNextPage}
-			<button
-				class="btn btn-secondary load label-sm"
-				bind:this={topEl}
-				use:observeVisible={onTopVisible}
-				onclick={loadOlder}
-				disabled={view.isFetchingNextPage}
-			>
-				{view.isFetchingNextPage ? 'Loading more messages...' : 'Load earlier messages'}
-			</button>
-		{/if}
-	{/if}
-</main>
+	</main>
+	<div class="message-editor">
+		<UcpEditor context="CHAT" />
+	</div>
+</div>
 
 <style>
+	.thread-page {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+
 	.thread {
 		display: flex;
 		flex-direction: column-reverse;
@@ -111,8 +119,15 @@
 	.skeletons {
 		display: flex;
 		flex-direction: column;
-		gap: var(--space-gap-xs);
 		/*padding: var(--space-padding-xs) 0;*/
+	}
+
+	.skeletons {
+		gap: var(--space-gap-xs);
+	}
+
+	.messages :global(.message:not(:last-child)) {
+		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 
 	.load {

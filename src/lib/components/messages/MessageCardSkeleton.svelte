@@ -1,42 +1,31 @@
 <script lang="ts">
 	import Skeleton from '$lib/components/Skeleton.svelte';
 
-	let {
-		lines = 3,
-		grouped = false
-	}: {
-		lines?: number;
-		grouped?: boolean;
-	} = $props();
+	let { lines = 3 }: { lines?: number } = $props();
 </script>
 
-<article class="post">
+<article class="message">
 	<div class="who">
-		{#if !grouped}
-			<Skeleton circle size="40px" />
-		{/if}
+		<Skeleton circle size="40px" />
 	</div>
 	<div class="body">
-		{#if !grouped}
-			<header class="meta">
-				<span class="label-md"><Skeleton text width="7rem" /></span>
-				<span class="text-xs"><Skeleton text width="4rem" /></span>
-			</header>
-		{/if}
+		<header class="meta">
+			<span class="label-md"><Skeleton text width="7rem" /></span>
+			<span class="text-xs"><Skeleton text width="4rem" /></span>
+		</header>
 		<Skeleton text {lines} />
 	</div>
 </article>
 
 <style>
-	.post {
+	.message {
 		display: flex;
-		gap: var(--space-3);
-		padding: var(--space-1) var(--space-padding-sm);
+		gap: var(--space-gap-sm);
+		padding: var(--space-padding-md) var(--space-padding-sm);
 	}
 
 	.who {
 		flex: none;
-		width: 40px;
 	}
 
 	.body {

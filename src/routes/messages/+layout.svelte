@@ -7,14 +7,16 @@
 
 	let { children } = $props();
 
-	const inbox = createQuery(() => inboxQuery());
+	const inbox = $derived(page.url.searchParams.get('inbox') ?? 'inbox');
+
+	const inboxQueryState = createQuery(() => inboxQuery(inbox));
 
 	const selected = $derived(page.params.id !== undefined);
 </script>
 
 <div class="shell" class:selected>
 	<aside class="list">
-		<QueryState query={inbox}>
+		<QueryState query={inboxQueryState}>
 			{#snippet loading()}
 				<p class="empty text-sm">Loading&hellip;</p>
 			{/snippet}
