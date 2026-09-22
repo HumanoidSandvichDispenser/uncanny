@@ -97,31 +97,34 @@
 			placeholder="Write your answer&hellip;"
 			disabled={queue.busy}
 			onSubmit={() => queue.submitReply()}
-		/>
+		>
+			{#snippet actions()}
+				<button
+					type="button"
+					class="ghost label-sm"
+					onclick={() => queue.snooze()}
+					disabled={queue.busy}
+				>
+					<SkipForwardIcon size={15} />
+					Skip
+				</button>
+				<button
+					type="button"
+					class="post label-sm"
+					onclick={() => queue.submitReply()}
+					disabled={queue.busy || queue.reply.trim().length === 0}
+				>
+					<PaperPlaneRightIcon size={15} weight="fill" />
+					Post answer
+				</button>
+			{/snippet}
+		</UcpEditor>
 
 		{#if queue.error}
 			<p class="err text-sm">{queue.error}</p>
 		{/if}
 
 		<div class="actions">
-			<button
-				type="button"
-				class="ghost label-sm"
-				onclick={() => queue.snooze()}
-				disabled={queue.busy}
-			>
-				<SkipForwardIcon size={15} />
-				Skip
-			</button>
-			<button
-				type="button"
-				class="post label-sm"
-				onclick={() => queue.submitReply()}
-				disabled={queue.busy || queue.reply.trim().length === 0}
-			>
-				<PaperPlaneRightIcon size={15} weight="fill" />
-				Post answer
-			</button>
 		</div>
 	{:else if queue.error}
 		<div class="state">

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Component } from 'svelte';
+	import type { Component, Snippet } from 'svelte';
 	import { untrack } from 'svelte';
 	import { EditorState } from 'prosemirror-state';
 	import { EditorView } from 'prosemirror-view';
@@ -27,12 +27,14 @@
 		context = 'FORUM',
 		disabled = false,
 		placeholder = '',
+		actions,
 		onSubmit
 	}: {
 		value?: string;
 		context?: UcpContext;
 		disabled?: boolean;
 		placeholder?: string;
+		actions?: Snippet | null;
 		/** Mod-Enter handler, for submit-on-shortcut forms. */
 		onSubmit?: () => void;
 	} = $props();
@@ -159,37 +161,46 @@
 </script>
 
 <div class="ucp-editor" class:disabled>
-	<div class="toolbar">
-		{#each tools as tool (tool.name)}
-			<button
-				type="button"
-				class="btn btn-icon tool"
-				class:active={isActive(tool)}
-				title={tool.label}
-				aria-label={tool.label}
-				aria-pressed={isActive(tool)}
-				{disabled}
-				onmousedown={(e) => e.preventDefault()}
-				onclick={() => run(tool)}
-			>
-				<tool.icon weight="bold" />
-			</button>
-		{/each}
-	</div>
 	<div
 		class="surface"
 		class:empty={isEmpty}
 		data-placeholder={placeholder}
 		bind:this={host}
 	></div>
+	<div class="toolbar">
+		<div class="tools">
+			{#each tools as tool (tool.name)}
+				<button
+					type="button"
+					class="btn btn-icon tool"
+					class:active={isActive(tool)}
+					title={tool.label}
+					aria-label={tool.label}
+					aria-pressed={isActive(tool)}
+					{disabled}
+					onmousedown={(e) => e.preventDefault()}
+					onclick={() => run(tool)}
+				>
+					<tool.icon weight="bold" />
+				</button>
+			{/each}
+		</div>
+		<div class="actions">
+			{@render actions?.()}
+		</div>
+	</div>
 </div>
 
 <style>
 	.toolbar {
 		display: flex;
+		padding: var(--space-padding-xs);
+		justify-content: space-between;
+	}
+
+	.tools {
+		display: flex;
 		gap: var(--space-1);
-		padding: var(--space-2);
-		border-bottom: var(--border-thin) solid var(--color-border);
 	}
 
 	.tool {
