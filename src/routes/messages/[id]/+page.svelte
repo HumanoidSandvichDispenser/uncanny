@@ -142,4 +142,12 @@
 	.error {
 		color: var(--color-error);
 	}
+
+	.message-editor {
+		padding: 0 var(--space-padding-sm) var(--space-padding-sm);
+
+		@media (--mobile){
+			padding: 0;
+		}
+	}
 </style>
