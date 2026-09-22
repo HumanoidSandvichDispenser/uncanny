@@ -27,6 +27,7 @@
 		context = 'FORUM',
 		disabled = false,
 		placeholder = '',
+		topbar,
 		actions,
 		onSubmit
 	}: {
@@ -34,6 +35,7 @@
 		context?: UcpContext;
 		disabled?: boolean;
 		placeholder?: string;
+		topbar?: Snippet | null;
 		actions?: Snippet | null;
 		/** Mod-Enter handler, for submit-on-shortcut forms. */
 		onSubmit?: () => void;
@@ -161,6 +163,9 @@
 </script>
 
 <div class="ucp-editor" class:disabled>
+	<div class="topbar">
+		{@render topbar?.()}
+	</div>
 	<div
 		class="surface"
 		class:empty={isEmpty}
