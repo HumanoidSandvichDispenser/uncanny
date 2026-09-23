@@ -190,8 +190,7 @@
 	 * faking it with a card-colored avatar border, so it works on any
 	 * background.
 	 */
-	.ring.has::before,
-	.ring.plain::before {
+	.ring.has::before {
 		content: "";
 		position: absolute;
 		inset: 0;
@@ -206,10 +205,6 @@
 
 	.ring.has::before {
 		background: linear-gradient(135deg, var(--color-accent-500), var(--color-error-500));
-	}
-
-	.ring.plain::before {
-		background: var(--color-border);
 	}
 
 	.ring.dashed {

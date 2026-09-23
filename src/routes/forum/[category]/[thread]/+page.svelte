@@ -299,10 +299,6 @@
 		gap: var(--space-2);
 	}
 
-	.nav-btn {
-		padding: var(--space-2);
-	}
-
 	.crumb {
 		display: inline-block;
 		margin-bottom: var(--space-2);

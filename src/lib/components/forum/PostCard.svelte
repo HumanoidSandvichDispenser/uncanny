@@ -56,10 +56,6 @@
 		gap: var(--space-2);
 	}
 
-	.name {
-		color: var(--color-text);
-	}
-
 	.sub {
 		color: var(--color-text-secondary);
 	}
