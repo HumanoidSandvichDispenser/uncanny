@@ -163,9 +163,11 @@
 </script>
 
 <div class="ucp-editor" class:disabled>
-	<div class="topbar">
-		{@render topbar?.()}
-	</div>
+	{#if topbar}
+		<div class="topbar">
+			{@render topbar?.()}
+		</div>
+	{/if}
 	<div
 		class="surface"
 		class:empty={isEmpty}
@@ -197,9 +199,36 @@
 </div>
 
 <style>
+	.ucp-editor {
+		padding: var(--space-padding-md);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-gap-xs);
+		max-height: var(--max-height, none);
+	}
+
+	.surface {
+		flex: 1 1 auto;
+		min-height: 0;
+		overflow-y: auto;
+		/*padding: 0 var(--space-padding-xs);*/
+	}
+
+	.topbar,
+	.toolbar {
+		margin: calc(-1 * var(--space-padding-xs));
+		flex: none;
+	}
+
 	.toolbar {
 		display: flex;
-		padding: var(--space-padding-xs);
+		/*padding: var(--space-padding-xs);*/
+		justify-content: space-between;
+	}
+
+	.topbar {
+		display: flex;
+		/*padding: var(--space-padding-xs) var(--space-padding-xs) 0;*/
 		justify-content: space-between;
 	}
 

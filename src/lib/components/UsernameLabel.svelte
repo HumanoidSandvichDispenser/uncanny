@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { identity } from '$lib/profiles.svelte';
 	import ShieldCheckIcon from 'phosphor-svelte/lib/ShieldCheckIcon';
+	import GhostIcon from 'phosphor-svelte/lib/GhostIcon';
 
 	let {
 		userId,
@@ -15,10 +16,10 @@
 <div class="username-label">
 	<a class="name label-md" href={resolve('/users/[id]', { id: userId })}>
 		{info.name}
-		{#if isAnonymous}
-			<span>(Anonymous)</span>
-		{/if}
 	</a>
+	{#if isAnonymous}
+		<GhostIcon />
+	{/if}
 	{#if showAdmin && info.isAdmin}
 		<ShieldCheckIcon />
 	{/if}

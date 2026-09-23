@@ -109,8 +109,7 @@
 					Skip
 				</button>
 				<button
-					type="button"
-					class="post label-sm"
+					class="btn btn-accent post label-sm"
 					onclick={() => queue.submitReply()}
 					disabled={queue.busy || queue.reply.trim().length === 0}
 				>
@@ -190,7 +189,6 @@
 	}
 
 	.ghost,
-	.post,
 	.retry {
 		display: inline-flex;
 		align-items: center;
@@ -212,17 +210,8 @@
 
 	.post {
 		margin-left: auto;
-		padding: var(--space-2) var(--space-4);
-		color: var(--color-text-inverse);
-		background: var(--color-accent-600);
-		border: none;
 	}
 
-	.post:hover:not(:disabled) {
-		background: var(--color-accent-700);
-	}
-
-	.post:disabled,
 	.ghost:disabled {
 		opacity: 0.5;
 		cursor: default;

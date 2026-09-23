@@ -223,6 +223,15 @@ p {
 	background: var(--color-accent-700);
 }
 
+.btn-accent {
+	color: var(--color-text-inverse);
+	background: var(--color-accent-600);
+}
+
+.btn-accent:hover:not(:disabled) {
+	background: var(--color-accent-700);
+}
+
 .btn-secondary {
 	color: var(--color-text);
 	background: var(--color-surface);

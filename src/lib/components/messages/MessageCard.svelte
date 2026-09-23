@@ -3,6 +3,7 @@
 	import { resolve } from '$app/paths';
 	import UserAvatar from '$lib/components/UserAvatar.svelte';
 	import UsernameLabel from '$lib/components/UsernameLabel.svelte';
+	import AnonMarker from '$lib/components/AnonMarker.svelte';
 	import { fullDateTime, messageDateTime } from '$lib/format';
 	import { messageSender } from '$lib/messageSender';
 	import Ucp from '$lib/ucp/components/Ucp.svelte';
@@ -38,7 +39,10 @@
 				{#if sender.userId}
 					<UsernameLabel userId={sender.userId} isAnonymous showAdmin />
 				{:else}
-					<span class="name label-md">Anonymous</span>
+					<span class="anon-name">
+						<span class="name label-md">Anonymous</span>
+						<AnonMarker />
+					</span>
 				{/if}
 			{:else}
 				<UsernameLabel userId={sender.userId} showAdmin />
@@ -81,6 +85,12 @@
 		display: flex;
 		align-items: baseline;
 		gap: var(--space-2);
+	}
+
+	.anon-name {
+		display: flex;
+		align-items: center;
+		gap: var(--space-gap-xs);
 	}
 
 	.name {
